@@ -22,7 +22,7 @@ public class Sheeco {
         }
     }
 
-    public <T> List<T> fromSpreadsheet(final File file, final Class<T> payloadType) {
+    public <T> List<T> fromSpreadsheet(final File file, final Class<T> payloadType) throws SpreadsheetUnmarshallingException {
         try {
             return fromSpreadsheet(new BufferedInputStream(new FileInputStream(file)), payloadType);
         } catch (final FileNotFoundException e) {
@@ -30,7 +30,7 @@ public class Sheeco {
         }
     }
 
-    public <T> List<T> fromSpreadsheet(final InputStream stream, final Class<T> payloadType) {
+    public <T> List<T> fromSpreadsheet(final InputStream stream, final Class<T> payloadType) throws SpreadsheetUnmarshallingException {
         NPOIFSFileSystem fsFileSystem = null;
         final Workbook wb;
 
