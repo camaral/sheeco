@@ -6,137 +6,130 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import java.util.Arrays;
 
 public class SpreadsheetViolation {
-    private String msgKey;
+	private String msgKey;
 
-    private int colNumber;
+	private int colNumber;
 
-    private RowRange rowRange;
+	private RowRange rowRange;
 
-    private OriginalCellValue originalValue;
+	private OriginalCellValue originalValue;
 
-    private String localizedMsg = null;
+	private String localizedMsg = null;
 
-    private String[] msgParams;
+	private String[] msgParams;
 
-    public SpreadsheetViolation(
-            final String msgKey,
-            final Cell cell) {
-        this.msgKey = msgKey;
-        this.colNumber = cell.getColumnIndex();
-        this.rowRange = new RowRange(cell.getRowIndex());
-        this.originalValue = new OriginalCellValue(getCellType(cell), getCellValue(cell));
-    }
+	public SpreadsheetViolation(final String msgKey, final Cell cell) {
+		this.msgKey = msgKey;
+		this.colNumber = cell.getColumnIndex();
+		this.rowRange = new RowRange(cell.getRowIndex());
+		this.originalValue = new OriginalCellValue(getCellType(cell),
+				getCellValue(cell));
+	}
 
-    public SpreadsheetViolation(
-            final String msgKey) {
-        this.msgKey = msgKey;
-        this.colNumber = -1;
-        this.rowRange = RowRange.NO_ROW;
-        this.originalValue = new OriginalCellValue(OriginalCellType.NO_VALUE, null);
-    }
+	public SpreadsheetViolation(final String msgKey) {
+		this.msgKey = msgKey;
+		this.colNumber = -1;
+		this.rowRange = RowRange.NO_ROW;
+		this.originalValue = new OriginalCellValue(OriginalCellType.NO_VALUE,
+				null);
+	}
 
-    public SpreadsheetViolation(
-            final String msgKey,
-            final String[] msgParams) {
-        this.msgKey = msgKey;
-        this.msgParams = msgParams;
-        this.colNumber = -1;
-        this.rowRange = RowRange.NO_ROW;
-        this.originalValue = new OriginalCellValue(OriginalCellType.NO_VALUE, null);
-    }
+	public SpreadsheetViolation(final String msgKey, final String[] msgParams) {
+		this.msgKey = msgKey;
+		this.msgParams = msgParams;
+		this.colNumber = -1;
+		this.rowRange = RowRange.NO_ROW;
+		this.originalValue = new OriginalCellValue(OriginalCellType.NO_VALUE,
+				null);
+	}
 
-    public SpreadsheetViolation(
-            final String msgKey,
-            final RowRange rowRange,
-            final int colNumber,
-            final OriginalCellValue originalCellValue,
-            final String[] msgParams) {
-        this.msgKey = msgKey;
-        this.rowRange = rowRange;
-        this.colNumber = colNumber;
-        this.originalValue = originalCellValue;
-        this.msgParams = msgParams;
-    }
+	public SpreadsheetViolation(final String msgKey, final RowRange rowRange,
+			final int colNumber, final OriginalCellValue originalCellValue,
+			final String[] msgParams) {
+		this.msgKey = msgKey;
+		this.rowRange = rowRange;
+		this.colNumber = colNumber;
+		this.originalValue = originalCellValue;
+		this.msgParams = msgParams;
+	}
 
-    @SuppressWarnings("unused")
-    private SpreadsheetViolation() {
-    }
+	@SuppressWarnings("unused")
+	private SpreadsheetViolation() {
+	}
 
-    public String getMsgKey() {
-        return msgKey;
-    }
+	public String getMsgKey() {
+		return msgKey;
+	}
 
-    public int getColNumber() {
-        return colNumber;
-    }
+	public int getColNumber() {
+		return colNumber;
+	}
 
-    public RowRange getRowRange() {
-        return rowRange;
-    }
+	public RowRange getRowRange() {
+		return rowRange;
+	}
 
-    public OriginalCellValue getOriginalValue() {
-        return originalValue;
-    }
+	public OriginalCellValue getOriginalValue() {
+		return originalValue;
+	}
 
-    public String getLocalizedMsg() {
-        return localizedMsg != null ? localizedMsg : getMsgKey();
-    }
+	public String getLocalizedMsg() {
+		return localizedMsg != null ? localizedMsg : getMsgKey();
+	}
 
-    public String[] getMsgParams() {
-        return this.msgParams == null ? new String[]{} : this.msgParams;
-    }
+	public String[] getMsgParams() {
+		return this.msgParams == null ? new String[] {} : this.msgParams;
+	}
 
-    @Override
-    public String toString() {
-        return String.format("row %s column %d violation : %s params: %s ",
-                getRowRange().toString(),
-                getColNumber(),
-                getMsgKey(),
-                Arrays.toString(getMsgParams()));
-    }
+	@Override
+	public String toString() {
+		return String.format("row %s column %d violation : %s params: %s ",
+				getRowRange().toString(), getColNumber(), getMsgKey(),
+				Arrays.toString(getMsgParams()));
+	}
 
-    private static Object getCellValue(
-            final Cell cell) {
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return cell.getDateCellValue();
-                }
-                return cell.getNumericCellValue();
-            case Cell.CELL_TYPE_STRING:
-                return cell.getStringCellValue();
-            case Cell.CELL_TYPE_BLANK:
-                return null;
-            case Cell.CELL_TYPE_BOOLEAN:
-                return cell.getBooleanCellValue();
-            case Cell.CELL_TYPE_ERROR:
-                return cell.getErrorCellValue();
-            case Cell.CELL_TYPE_FORMULA:
-                return cell.getCellFormula();
-        }
-        throw new UnsupportedOperationException("CellType " + cell.getCellType() + " is invalid");
-    }
+	private static Object getCellValue(final Cell cell) {
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return cell.getDateCellValue();
+			}
+			return cell.getNumericCellValue();
+		case Cell.CELL_TYPE_STRING:
+			return cell.getStringCellValue();
+		case Cell.CELL_TYPE_BLANK:
+			return null;
+		case Cell.CELL_TYPE_BOOLEAN:
+			return cell.getBooleanCellValue();
+		case Cell.CELL_TYPE_ERROR:
+			return cell.getErrorCellValue();
+		case Cell.CELL_TYPE_FORMULA:
+			return cell.getCellFormula();
+		}
+		throw new UnsupportedOperationException("CellType "
+				+ cell.getCellType() + " is invalid");
+	}
 
-    private static OriginalCellType getCellType(
-            final Cell cell) {
-        switch (cell.getCellType()) {
-            case Cell.CELL_TYPE_NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    return OriginalCellType.DATE;
-                }
-                return OriginalCellType.NUMERIC;
-            case Cell.CELL_TYPE_STRING:
-                return OriginalCellType.STRING;
-            case Cell.CELL_TYPE_BLANK:
-                return OriginalCellType.BLANK;
-            case Cell.CELL_TYPE_BOOLEAN:
-                return OriginalCellType.BOOLEAN;
-            case Cell.CELL_TYPE_ERROR:
-                return OriginalCellType.ERROR;
-            case Cell.CELL_TYPE_FORMULA:
-                return OriginalCellType.FORMULA;
-        }
-        throw new UnsupportedOperationException("CellType " + cell.getCellType() + " is invalid");
-    }
+	private static OriginalCellType getCellType(final Cell cell) {
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return OriginalCellType.DATE;
+			}
+			return OriginalCellType.NUMERIC;
+		case Cell.CELL_TYPE_STRING:
+			return OriginalCellType.STRING;
+		case Cell.CELL_TYPE_BLANK:
+			return OriginalCellType.BLANK;
+		case Cell.CELL_TYPE_BOOLEAN:
+			return OriginalCellType.BOOLEAN;
+		case Cell.CELL_TYPE_ERROR:
+			return OriginalCellType.ERROR;
+		case Cell.CELL_TYPE_FORMULA:
+			return OriginalCellType.FORMULA;
+		}
+		throw new UnsupportedOperationException("CellType "
+				+ cell.getCellType() + " is invalid");
+	}
 
 }
