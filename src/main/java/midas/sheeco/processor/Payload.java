@@ -23,12 +23,14 @@ import midas.sheeco.annotation.SpreadsheetPayload;
  * @author caio.amaral
  *
  */
-public class Payload {
+public class Payload<T> {
+	private final Class<T> clazz;
 	private final String name;
 	private final List<Attribute> attributes;
 	private final List<Element> elements;
 
-	public Payload(final Class<?> payloadClass) {
+	public Payload(final Class<T> payloadClass) {
+		this.clazz = payloadClass;
 		this.name = getName(payloadClass);
 		this.attributes = AttributeScanner.scan(payloadClass);
 		this.elements = ElementScanner.scan(payloadClass);
@@ -44,6 +46,15 @@ public class Payload {
 
 	public List<Element> getElements() {
 		return elements;
+	}
+
+	public T newInstance() {
+		try {
+			return clazz.newInstance();
+		} catch (final Exception e) {
+			throw new RuntimeException(
+					"No-args constructor must be present for deserialization");
+		}
 	}
 
 	private static String getName(final Class<?> payloadClass) {

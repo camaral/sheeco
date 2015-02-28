@@ -20,38 +20,39 @@ import java.text.DecimalFormat;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.RichTextString;
 
-public class SpreadsheetStringAdapter
-    implements
-        SpreadsheetTypeAdapter<String>
+public class SpreadsheetStringAdapter implements SpreadsheetTypeAdapter<String>
 
 {
-    public static final String DECIMAL_PATTERN = "0.###########";
-    private static final DecimalFormat decimalFormat = new DecimalFormat( DECIMAL_PATTERN );
+	public static final String DECIMAL_PATTERN = "0.###########";
+	private static final DecimalFormat decimalFormat = new DecimalFormat(
+			DECIMAL_PATTERN);
 
-    @Override
-    public String fromSpreadsheet(
-        final Cell cell )
-    {
-        switch( cell.getCellType() ) {
-            case Cell.CELL_TYPE_STRING:
-                final String value = cell.getRichStringCellValue().getString().trim();
-                return ! value.isEmpty() ? value : null;
-            case Cell.CELL_TYPE_NUMERIC:
-                if( DateUtil.isCellDateFormatted( cell ) ) {
-                    return String.valueOf( SpreadsheetDateAdapter.DATE_PATTERNS[ 0 ].format( cell.getDateCellValue() ) );
-                } else {
-                    return decimalFormat.format( cell.getNumericCellValue() );
-                }
-            case Cell.CELL_TYPE_BOOLEAN:
-                return String.valueOf( cell.getBooleanCellValue() );
-            case Cell.CELL_TYPE_BLANK:
-                return null;
-            case Cell.CELL_TYPE_ERROR:
-            case Cell.CELL_TYPE_FORMULA:
-            default:
-                throw new InvalidCellFormatException( "The cell type: " + cell.getCellType()
-                    + " is either not supported or not possible" );
-        }
-    }
+	@Override
+	public String fromSpreadsheet(final Cell cell) {
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_STRING:
+			final RichTextString text = cell.getRichStringCellValue();
+			final String value = text.getString().trim();
+			return !value.isEmpty() ? value : null;
+		case Cell.CELL_TYPE_NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				return String.valueOf(SpreadsheetDateAdapter.DATE_PATTERNS[0]
+						.format(cell.getDateCellValue()));
+			} else {
+				return decimalFormat.format(cell.getNumericCellValue());
+			}
+		case Cell.CELL_TYPE_BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case Cell.CELL_TYPE_BLANK:
+			return null;
+		case Cell.CELL_TYPE_ERROR:
+		case Cell.CELL_TYPE_FORMULA:
+		default:
+			throw new InvalidCellFormatException("The cell type: "
+					+ cell.getCellType()
+					+ " is either not supported or not possible");
+		}
+	}
 }

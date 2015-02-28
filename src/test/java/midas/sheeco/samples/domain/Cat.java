@@ -28,15 +28,35 @@ import midas.sheeco.annotation.SpreadsheetPayload;
 @SpreadsheetPayload(name = "Cat")
 public class Cat {
 	@SpreadsheetAttribute(index = 0)
-	String name;
-	@SpreadsheetAttribute(index = 2, name="Birth date")
-	Date birthDate;
-	@SpreadsheetAttribute(index = 1, name="Male?")
-	Boolean male;
+	private String name;
+	@SpreadsheetAttribute(index = 2, name = "Birth date")
+	private Date birthDate;
+	@SpreadsheetAttribute(index = 1, name = "Male?")
+	private Boolean male;
 
 	@SpreadsheetElement(index = 3)
-	Fur body;
+	private Fur body;
 	@SpreadsheetElement(index = 5)
-	Fur tail;
+	private Fur tail;
+
+	public String getName() {
+		return name;
+	}
+
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public Boolean isMale() {
+		return male;
+	}
+
+	public Fur getBody() {
+		return body;
+	}
+
+	public Fur getTail() {
+		return tail;
+	}
 
 }

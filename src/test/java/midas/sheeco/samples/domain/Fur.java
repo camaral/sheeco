@@ -25,7 +25,15 @@ import midas.sheeco.annotation.SpreadsheetPayload;
 @SpreadsheetPayload(name = "Fur")
 public class Fur {
 	@SpreadsheetAttribute(index = 0)
-	Integer hairLength;
+	private Integer hairLength;
 	@SpreadsheetAttribute(index = 1)
-	String hairColor;
+	private String hairColor;
+
+	public String getHairColor() {
+		return hairColor;
+	}
+
+	public Integer getHairLength() {
+		return hairLength;
+	}
 }
