@@ -2,9 +2,10 @@
 
 Marshalling and unmarshalling Spreadsheets to Java Objects
 
-|Name|Birth date|Male?|hairLength|hairColor|hairLength|hairColor
-|Floofly|2014/12/12|false|1|orange|1|yellow|
-|Tor|2014/11/11|true|3|black|0|grey|
+Name|Birth date|Male?|hairLength|hairColor|hairLength|hairColor
+----|----------|-----|----------|---------|----------|---------
+Floofly|2014/12/12|false|1|orange|1|yellow
+Tor|2014/11/11|true|3|black|0|grey
 
 ```java
 @SpreadsheetPayload(name = "Cat")
