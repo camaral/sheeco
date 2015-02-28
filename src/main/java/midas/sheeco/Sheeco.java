@@ -23,13 +23,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import midas.sheeco.annotation.SpreadsheetPayload;
 import midas.sheeco.exceptions.SpreadsheetUnmarshallingException;
+import midas.sheeco.processor.Payload;
+import midas.sheeco.processor.PayloadContext;
 
 import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -38,13 +44,17 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  * @author caio.amaral
  */
 public class Sheeco {
+	/**
+	 * Max number of blank consecutive rows
+	 */
+	private static final int MAX_BLANK_ROWS = 50;
 
 	public <T> List<T> fromSpreadsheet(final File file,
-			final Class<T> payloadType)
+			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException {
 		try {
 			return fromSpreadsheet(new BufferedInputStream(new FileInputStream(
-					file)), payloadType);
+					file)), payloadClass);
 		} catch (final FileNotFoundException e) {
 			throw new RuntimeException(
 					String.format("sheeco.serializer.file.cannot.open"));
@@ -52,14 +62,23 @@ public class Sheeco {
 	}
 
 	public <T> List<T> fromSpreadsheet(final InputStream stream,
-			final Class<T> payloadType)
+			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException {
 		NPOIFSFileSystem fsFileSystem = null;
-		final Workbook wb;
 
 		try {
 			fsFileSystem = new NPOIFSFileSystem(stream);
-			wb = WorkbookFactory.create(fsFileSystem);
+
+			final Workbook wb = WorkbookFactory.create(fsFileSystem);
+			final Payload<T> payload = new Payload<>(payloadClass);
+
+			final Sheet sheet = getSheet(payload.getName(), wb);
+
+			final FormulaEvaluator evaluator = wb.getCreationHelper()
+					.createFormulaEvaluator();
+
+			return readPayloads(new PayloadContext<>(sheet, evaluator, payload));
+
 		} catch (final FileNotFoundException e) {
 			throw new RuntimeException(
 					String.format("sheeco.serializer.file.cannot.open"));
@@ -69,28 +88,19 @@ public class Sheeco {
 		} finally {
 			close(fsFileSystem);
 		}
+	}
 
-		try {
-			final SpreadsheetPayload spreadsheetPayload = payloadType
-					.getAnnotation(SpreadsheetPayload.class);
-			if (spreadsheetPayload == null) {
-				throw new AssertionError("class "
-						+ payloadType.getCanonicalName()
-						+ " is not annotated with @SpreadsheetPayload");
-			}
-			final String sheetName = spreadsheetPayload.name();
-			final Sheet sheet = wb.getSheet(sheetName);
+	private <T> Sheet getSheet(final String sheetName, final Workbook wb)
+			throws AssertionError {
+		final Sheet sheet = wb.getSheet(sheetName);
 
-			if (sheet == null) {
-				throw new AssertionError(
-						"Spreadsheet does not contain a sheet named with \""
-								+ sheetName + "\"");
-			}
-		} finally {
-			close(fsFileSystem);
+		if (sheet == null) {
+			throw new AssertionError(
+					"Spreadsheet does not contain a sheet named with \""
+							+ sheetName + "\"");
 		}
 
-		throw new RuntimeException("TODO!");
+		return sheet;
 	}
 
 	public void toSpreadsheet(final Set<Class<?>> payloadClass,
@@ -103,6 +113,52 @@ public class Sheeco {
 
 	}
 
+	private <T> List<T> readPayloads(final PayloadContext<T> ctx) {
+		final List<T> payloads = new ArrayList<T>();
+
+		final int firstRowNum = ctx.getSheet().getFirstRowNum();
+		int blankRowCount = 0;
+
+		for (final Row row : ctx.getSheet()) {
+			if (row.getRowNum() == firstRowNum) {
+				// First row reserved for headers
+				continue;
+			}
+			if (!isBlankRow(row)) {
+				blankRowCount = 0;
+
+				readPayload(row, ctx);
+
+			} else {
+				// if the blank rows limit is reached, throws an exception
+				++blankRowCount;
+				if (blankRowCount >= MAX_BLANK_ROWS) {
+					throw new RuntimeException(
+							"serializer.spreadsheet.row.too.many.blank");
+				}
+			}
+		}
+
+		return payloads;
+	}
+
+	private <T> T readPayload(final Row row, final PayloadContext<T> ctx) {
+		final T payload = ctx.getPayload().newInstance();
+
+		PayloadFiller.fillAttributes(payload, row, ctx);
+		readElements();
+
+		return payload;
+	}
+
+	/**
+	 * Reads the spreadsheet row and populate the current Object's
+	 * {@link SpreadsheetPayload} fields
+	 */
+	private void readElements() {
+		// TODO:
+	}
+
 	private static void close(final NPOIFSFileSystem fsFileSystem) {
 		if (fsFileSystem != null) {
 			try {
@@ -111,5 +167,16 @@ public class Sheeco {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	private boolean isBlankRow(final Row row) {
+		for (int i = row.getFirstCellNum(); i <= row.getLastCellNum(); i++) {
+			final Cell cell = row.getCell(i);
+			if (cell != null
+					&& row.getCell(i).getCellType() != Cell.CELL_TYPE_BLANK) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
