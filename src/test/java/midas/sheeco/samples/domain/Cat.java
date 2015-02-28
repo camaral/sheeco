@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package midas.sheeco.samples.domain;
 
-package midas.sheeco.annotation;
+import java.util.Date;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import midas.sheeco.annotation.SpreadsheetAttribute;
+import midas.sheeco.annotation.SpreadsheetElement;
+import midas.sheeco.annotation.SpreadsheetPayload;
 
 /**
- * A Java POJO to be serialized as a spreadsheet or deserialized from a
- * spreadsheet
- *
  * @author caio.amaral
+ *
  */
-@Retention(RUNTIME)
-@Target({ TYPE })
-public @interface SpreadsheetPayload {
-	/**
-	 * The name of the entity represented by this payload. It will be used as
-	 * the name of the spreadsheet sheet.
-	 *
-	 * @return The name of the entity
-	 */
-	String name();
-	// TODO: make it optional; Use class name
+@SpreadsheetPayload(name = "Cat")
+public class Cat {
+	@SpreadsheetAttribute(index = 0)
+	String name;
+	@SpreadsheetAttribute(index = 2, name="Birth date")
+	Date birthDate;
+	@SpreadsheetAttribute(index = 1, name="Male?")
+	Boolean male;
+
+	@SpreadsheetElement(index = 3)
+	Fur body;
+	@SpreadsheetElement(index = 5)
+	Fur tail;
+
 }
