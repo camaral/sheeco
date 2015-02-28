@@ -123,12 +123,12 @@ public class Attribute {
 	 */
 	private static String getName(
 			final SpreadsheetAttribute attributeAnnotation, final Field field) {
-		final String headerName;
-		if (attributeAnnotation.name().isEmpty()) {
-			headerName = field.getName();
+		final String attrName;
+		if (attributeAnnotation == null || attributeAnnotation.name().isEmpty()) {
+			attrName = field.getName();
 		} else {
-			headerName = attributeAnnotation.name();
+			attrName = attributeAnnotation.name();
 		}
-		return headerName;
+		return attrName;
 	}
 }
