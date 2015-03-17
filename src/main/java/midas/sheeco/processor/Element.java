@@ -25,11 +25,14 @@ import midas.sheeco.type.adapter.InvalidCellValueException;
 
 public class Element {
 	private final Field field;
-	private final Class<?> type;
 	private final boolean isList;
 	private final int firstColumnIndex;
+	private final Payload<?> payload;
 
 	Element(final Field field) {
+		this.payload = new Payload<>(ReflectionUtils.getType(field), field
+				.getAnnotation(SpreadsheetElement.class).index());
+
 		this.field = field;
 		// this may not work if we run under a security manager
 		this.field.setAccessible(true);
@@ -40,8 +43,6 @@ public class Element {
 
 		this.firstColumnIndex = field.getAnnotation(SpreadsheetElement.class)
 				.index();
-
-		this.type = ReflectionUtils.getType(field);
 	}
 
 	public void setValue(final Object payload, final Object theElement)
@@ -94,8 +95,8 @@ public class Element {
 		return firstColumnIndex;
 	}
 
-	public Class<?> getType() {
-		return type;
+	public Payload<?> getPayload() {
+		return payload;
 	}
 
 }

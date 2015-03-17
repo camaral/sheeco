@@ -33,9 +33,9 @@ public class ElementScannerTest {
 		final List<Element> elements = ElementScanner.scan(Cat.class);
 		Assert.assertEquals(2, elements.size());
 
-		Assert.assertEquals(Fur.class, elements.get(0).getType());
+		Assert.assertEquals(Fur.class, elements.get(0).getPayload().getPayloadClass());
 		Assert.assertEquals(3, elements.get(0).getFirstColumnIndex());
-		Assert.assertEquals(Fur.class, elements.get(1).getType());
+		Assert.assertEquals(Fur.class, elements.get(1).getPayload().getPayloadClass());
 		Assert.assertEquals(5, elements.get(1).getFirstColumnIndex());
 	}
 

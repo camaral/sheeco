@@ -15,15 +15,18 @@
  */
 package midas.sheeco;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import midas.sheeco.exceptions.SpreadsheetViolation;
 import midas.sheeco.processor.Attribute;
+import midas.sheeco.processor.Element;
 import midas.sheeco.processor.PayloadContext;
 import midas.sheeco.type.adapter.InvalidCellFormatException;
 import midas.sheeco.type.adapter.InvalidCellValueException;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 
 /**
@@ -35,17 +38,28 @@ public class PayloadFiller {
 	/**
 	 * Reads the spreadsheet row and populate the current Object's native fields
 	 */
-	public static <T> void fillAttributes(final T payload, final Row row,
-			final PayloadContext<T> ctx) {
+	public static void fillAttributes(final Object payload, final Row row,
+			final PayloadContext<?> ctx) {
 		final List<Attribute> attributes = ctx.getPayload().getAttributes();
+
+		final List<SpreadsheetViolation> violations = fillAttributes(payload,
+				row, attributes, ctx.getEvaluator());
+
+		ctx.getViolations().addAll(violations);
+	}
+
+	public static <T> List<SpreadsheetViolation> fillAttributes(
+			final T payload, final Row row, final List<Attribute> attributes,
+			final FormulaEvaluator evaluator) {
+		final List<SpreadsheetViolation> violations = new ArrayList<>();
 
 		for (final Attribute attr : attributes) {
 			final Cell cell = row.getCell(attr.getColumnIndex(),
 					Row.CREATE_NULL_AS_BLANK);
-			ctx.getEvaluator().evaluateInCell(cell);
+			evaluator.evaluateInCell(cell);
 
 			if (cell.getCellType() == Cell.CELL_TYPE_ERROR) {
-				ctx.addViolation(new SpreadsheetViolation(
+				violations.add(new SpreadsheetViolation(
 						"serializer.spreadsheet.cell.error", cell));
 				continue;
 			}
@@ -53,15 +67,49 @@ public class PayloadFiller {
 			try {
 				attr.setValue(payload, cell);
 			} catch (final InvalidCellValueException e) {
-				ctx.addViolation(new SpreadsheetViolation(
+				violations.add(new SpreadsheetViolation(
 						"serializer.spreadsheet.cell.invalid", cell));
 				continue;
 			} catch (final InvalidCellFormatException e) {
-				ctx.addViolation(new SpreadsheetViolation(
+				violations.add(new SpreadsheetViolation(
 						"serializer.spreadsheet.cell.type.invalid", cell));
 				continue;
 			}
 
 		}
+
+		return violations;
+	}
+
+	public static void fillElements(final Object payload, final Row row,
+			final PayloadContext<?> ctx) {
+		final List<Element> elements = ctx.getPayload().getElements();
+
+		final List<SpreadsheetViolation> violations = fillElements(payload,
+				row, elements, ctx.getEvaluator());
+
+		ctx.getViolations().addAll(violations);
+	}
+
+	public static <T> List<SpreadsheetViolation> fillElements(final T payload,
+			final Row row, final List<Element> elements,
+			final FormulaEvaluator evaluator) {
+
+		final List<SpreadsheetViolation> violations = new ArrayList<>();
+
+		for (final Element element : elements) {
+			Object elemPayload = element.getPayload().newInstance();
+
+			final List<SpreadsheetViolation> stepViolations = fillAttributes(
+					elemPayload, row, element.getPayload().getAttributes(),
+					evaluator);
+
+			violations.addAll(stepViolations);
+
+			fillElements(elemPayload, row, element.getPayload().getElements(),
+					evaluator);
+		}
+
+		return violations;
 	}
 }

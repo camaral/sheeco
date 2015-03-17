@@ -114,7 +114,7 @@ public class Sheeco {
 	}
 
 	private <T> List<T> readPayloads(final PayloadContext<T> ctx) {
-		final List<T> payloads = new ArrayList<T>();
+		final List<T> payloads = new ArrayList<>();
 
 		final int firstRowNum = ctx.getSheet().getFirstRowNum();
 		int blankRowCount = 0;

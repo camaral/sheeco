@@ -28,11 +28,23 @@ public class Payload<T> {
 	private final String name;
 	private final List<Attribute> attributes;
 	private final List<Element> elements;
+	
+	public static <X> Payload<X> newPayload(final Class<X> payloadClass) {
+		return new Payload<>(payloadClass);
+	}
+	
+	public static <X> Payload<X> newPayload(final Class<X> payloadClass, final int scopeIndex) {
+		return new Payload<>(payloadClass, scopeIndex);
+	}
 
 	public Payload(final Class<T> payloadClass) {
+		this(payloadClass, 0);
+	}
+
+	public Payload(final Class<T> payloadClass, final int scopeIndex) {
 		this.clazz = payloadClass;
 		this.name = getName(payloadClass);
-		this.attributes = AttributeScanner.scan(payloadClass);
+		this.attributes = AttributeScanner.scan(payloadClass, scopeIndex);
 		this.elements = ElementScanner.scan(payloadClass);
 	}
 
@@ -46,6 +58,10 @@ public class Payload<T> {
 
 	public List<Element> getElements() {
 		return elements;
+	}
+
+	public Class<T> getPayloadClass() {
+		return clazz;
 	}
 
 	public T newInstance() {

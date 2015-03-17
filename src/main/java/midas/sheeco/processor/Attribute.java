@@ -31,7 +31,7 @@ public class Attribute {
 	private final int columnIndex;
 	private final String columnName;
 
-	Attribute(final Field field) {
+	Attribute(final Field field, final int scopeIndex) {
 		this.field = field;
 		// this may not work if we run under a security manager
 		this.field.setAccessible(true);
@@ -39,9 +39,10 @@ public class Attribute {
 		final SpreadsheetAttribute ssAttrib = field
 				.getAnnotation(SpreadsheetAttribute.class);
 
-		columnIndex = ssAttrib.index();
 		if (ssAttrib.scope() == SpreadsheetAttribute.ScopeType.RELATIVE) {
-			// TODO: columnIndex += scope;
+			columnIndex = ssAttrib.index() + scopeIndex;
+		} else {
+			columnIndex = ssAttrib.index();
 		}
 
 		this.columnName = getName(ssAttrib, field);

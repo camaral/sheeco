@@ -32,6 +32,11 @@ import midas.sheeco.annotation.SpreadsheetAttribute;
 public class AttributeScanner {
 
 	public static List<Attribute> scan(final Class<?> payloadClass) {
+		return scan(payloadClass, 0);
+	}
+
+	public static List<Attribute> scan(final Class<?> payloadClass,
+			final int scopeIndex) {
 		if (payloadClass == null) {
 			return Collections.emptyList();
 		}
@@ -40,8 +45,8 @@ public class AttributeScanner {
 
 		for (final Field field : payloadClass.getDeclaredFields()) {
 			if (field.isAnnotationPresent(SpreadsheetAttribute.class)) {
-				final Attribute attr = new Attribute(field);
-				
+				final Attribute attr = new Attribute(field, scopeIndex);
+
 				attrs.add(attr);
 			}
 		}

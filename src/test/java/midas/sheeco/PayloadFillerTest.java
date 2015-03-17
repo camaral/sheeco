@@ -56,7 +56,7 @@ public class PayloadFillerTest {
 		final FormulaEvaluator evaluator = Mockito.mock(FormulaEvaluator.class);
 
 		final Payload<Cat> payload = new Payload<>(Cat.class);
-		final Cat instance = payload.newInstance();
+		final Cat instance = (Cat) payload.newInstance();
 
 		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
 				payload);
