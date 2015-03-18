@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package midas.sheeco;
+package midas.sheeco.processor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import midas.sheeco.exceptions.SpreadsheetViolation;
-import midas.sheeco.processor.Attribute;
-import midas.sheeco.processor.Element;
-import midas.sheeco.processor.PayloadContext;
 import midas.sheeco.type.adapter.InvalidCellFormatException;
 import midas.sheeco.type.adapter.InvalidCellValueException;
 
