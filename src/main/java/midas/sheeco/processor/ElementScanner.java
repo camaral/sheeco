@@ -41,9 +41,9 @@ public class ElementScanner {
 				final Element elem = new Element(field);
 				elements.add(elem);
 				if (hasList && elem.isList()) {
-					throw new RuntimeException("More than one list of "
-							+ SpreadsheetElement.class.getName()
-							+ " is not allowed");
+					throw new AssertionError(
+							"Payload cannot hold more than one list of "
+									+ SpreadsheetElement.class.getName());
 				}
 				hasList = elem.isList();
 			}
