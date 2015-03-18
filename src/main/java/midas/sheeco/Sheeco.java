@@ -32,7 +32,7 @@ import midas.sheeco.processor.Payload;
 import midas.sheeco.processor.PayloadContext;
 import midas.sheeco.processor.PayloadFiller;
 
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -52,24 +52,23 @@ public class Sheeco {
 	public <T> List<T> fromSpreadsheet(final File file,
 			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException {
+		InputStream stream = null;
 		try {
-			return fromSpreadsheet(new BufferedInputStream(new FileInputStream(
-					file)), payloadClass);
+			stream = new BufferedInputStream(new FileInputStream(file));
+			return fromSpreadsheet(stream, payloadClass);
 		} catch (final FileNotFoundException e) {
 			throw new RuntimeException(
 					String.format("sheeco.serializer.file.cannot.open"));
+		} finally {
+			close(stream);
 		}
 	}
 
 	public <T> List<T> fromSpreadsheet(final InputStream stream,
 			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException {
-		NPOIFSFileSystem fsFileSystem = null;
-
 		try {
-			fsFileSystem = new NPOIFSFileSystem(stream);
-
-			final Workbook wb = WorkbookFactory.create(fsFileSystem);
+			final Workbook wb = WorkbookFactory.create(stream);
 			final Payload<T> payload = new Payload<>(payloadClass);
 
 			final Sheet sheet = getSheet(payload.getName(), wb);
@@ -82,11 +81,9 @@ public class Sheeco {
 		} catch (final FileNotFoundException e) {
 			throw new RuntimeException(
 					String.format("sheeco.serializer.file.cannot.open"));
-		} catch (final IOException e) {
+		} catch (final IOException | InvalidFormatException e) {
 			throw new RuntimeException(
 					String.format("sheeco.serializer.file.wrong.format"));
-		} finally {
-			close(fsFileSystem);
 		}
 	}
 
@@ -127,7 +124,7 @@ public class Sheeco {
 			if (!isBlankRow(row)) {
 				blankRowCount = 0;
 
-				readPayload(row, ctx);
+				payloads.add(readPayload(row, ctx));
 
 			} else {
 				// if the blank rows limit is reached, throws an exception
@@ -151,10 +148,10 @@ public class Sheeco {
 		return payload;
 	}
 
-	private static void close(final NPOIFSFileSystem fsFileSystem) {
-		if (fsFileSystem != null) {
+	private static void close(final InputStream stream) {
+		if (stream != null) {
 			try {
-				fsFileSystem.close();
+				stream.close();
 			} catch (final IOException e) {
 				throw new RuntimeException(e);
 			}
