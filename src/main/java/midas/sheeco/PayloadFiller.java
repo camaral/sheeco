@@ -106,6 +106,8 @@ public class PayloadFiller {
 
 			violations.addAll(stepViolations);
 
+			element.setValue(payload, elemPayload);
+
 			fillElements(elemPayload, row, element.getPayload().getElements(),
 					evaluator);
 		}

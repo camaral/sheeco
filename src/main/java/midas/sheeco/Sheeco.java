@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import midas.sheeco.annotation.SpreadsheetPayload;
 import midas.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import midas.sheeco.processor.Payload;
 import midas.sheeco.processor.PayloadContext;
@@ -90,6 +89,16 @@ public class Sheeco {
 		}
 	}
 
+	public void toSpreadsheet(final Set<Class<?>> payloadClass,
+			final OutputStream stream) {
+		throw new RuntimeException("Not Implemented");
+	}
+
+	public void toSpreadsheet(final List<? extends Object> payloads,
+			final OutputStream out) {
+		throw new RuntimeException("Not Implemented");
+	}
+
 	private <T> Sheet getSheet(final String sheetName, final Workbook wb)
 			throws AssertionError {
 		final Sheet sheet = wb.getSheet(sheetName);
@@ -101,16 +110,6 @@ public class Sheeco {
 		}
 
 		return sheet;
-	}
-
-	public void toSpreadsheet(final Set<Class<?>> payloadClass,
-			final OutputStream stream) {
-
-	}
-
-	public void toSpreadsheet(final List<? extends Object> payloads,
-			final OutputStream out) {
-
 	}
 
 	private <T> List<T> readPayloads(final PayloadContext<T> ctx) {
@@ -146,17 +145,9 @@ public class Sheeco {
 		final T payload = ctx.getPayload().newInstance();
 
 		PayloadFiller.fillAttributes(payload, row, ctx);
-		readElements();
+		PayloadFiller.fillElements(payload, row, ctx);
 
 		return payload;
-	}
-
-	/**
-	 * Reads the spreadsheet row and populate the current Object's
-	 * {@link SpreadsheetPayload} fields
-	 */
-	private void readElements() {
-		// TODO:
 	}
 
 	private static void close(final NPOIFSFileSystem fsFileSystem) {
