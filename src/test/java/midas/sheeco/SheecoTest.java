@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import junit.framework.Assert;
+import midas.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import midas.sheeco.samples.domain.Cat;
 
 import org.junit.Test;
@@ -45,6 +46,59 @@ public class SheecoTest {
 		List<Cat> cats = sheeco.fromSpreadsheet(new File(
 				"src/test/resources/cats.xls"), Cat.class);
 		assertsFromSpreadsheet(cats);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testViolations() {
+		try {
+			Sheeco sheeco = new Sheeco();
+			sheeco.fromSpreadsheet(new File(
+					"src/test/resources/cats_violations.xlsx"), Cat.class);
+
+			Assert.fail("Should have thrown SpreadsheetUnmarshallingException");
+		} catch (SpreadsheetUnmarshallingException e) {
+			Assert.assertNotNull(e.getPayloads());
+			Assert.assertNotNull(e.getViolations());
+			Assert.assertFalse(e.getViolations().isEmpty());
+
+			assertsFromViolationSpreadsheet((List<Cat>) e.getPayloads());
+		}
+	}
+
+	private void assertsFromViolationSpreadsheet(List<Cat> cats) {
+
+		Assert.assertEquals(3, cats.size());
+		Assert.assertEquals(cats.get(0).getName(), "Puss");
+		Assert.assertEquals(cats.get(1).getName(), "billie");
+		Assert.assertEquals(cats.get(2).getName(), "snow ball");
+
+		Assert.assertNotNull(cats.get(0).getBirthDate());
+		Assert.assertNull(cats.get(1).getBirthDate());
+		Assert.assertNotNull(cats.get(2).getBirthDate());
+
+		Assert.assertNull(cats.get(0).isMale());
+		Assert.assertFalse(cats.get(1).isMale());
+		Assert.assertTrue(cats.get(2).isMale());
+
+		Assert.assertEquals("orange", cats.get(0).getBody().getHairColor());
+		Assert.assertEquals("black", cats.get(1).getBody().getHairColor());
+		Assert.assertEquals("white", cats.get(2).getBody().getHairColor());
+
+		Assert.assertEquals(Integer.valueOf(1), cats.get(0).getBody()
+				.getHairLength());
+		Assert.assertNull(cats.get(1).getBody().getHairLength());
+		Assert.assertNull(cats.get(2).getBody().getHairLength());
+
+		Assert.assertEquals("gray", cats.get(0).getTail().getHairColor());
+		Assert.assertEquals("white", cats.get(1).getTail().getHairColor());
+		Assert.assertEquals("white", cats.get(2).getTail().getHairColor());
+
+		Assert.assertEquals(Integer.valueOf(2), cats.get(0).getTail()
+				.getHairLength());
+		Assert.assertEquals(Integer.valueOf(4), cats.get(1).getTail()
+				.getHairLength());
+		Assert.assertNull(cats.get(2).getTail().getHairLength());
 	}
 
 	private void assertsFromSpreadsheet(List<Cat> cats) {

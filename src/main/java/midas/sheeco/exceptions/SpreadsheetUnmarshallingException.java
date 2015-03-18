@@ -17,8 +17,14 @@
 package midas.sheeco.exceptions;
 
 import java.util.List;
+import java.util.Set;
 
 /**
+ * This exception is thrown when the spreadsheet was read, but some violations
+ * where found. The piece of payloads that where read is hold under
+ * {@link #getPayloads()}. The exception can be used to recreate the
+ * spreadsheet, highlighting the violations.
+ * 
  * @author caio.amaral
  */
 public class SpreadsheetUnmarshallingException extends Exception {
@@ -26,10 +32,10 @@ public class SpreadsheetUnmarshallingException extends Exception {
 
 	// TODO: improve payload type declaration here
 	private List<?> payloads;
-	private List<SpreadsheetViolation> violations;
+	private Set<SpreadsheetViolation> violations;
 
 	public SpreadsheetUnmarshallingException(final List<?> payloads,
-			final List<SpreadsheetViolation> violations) {
+			final Set<SpreadsheetViolation> violations) {
 		this.payloads = payloads;
 		this.violations = violations;
 	}
@@ -38,7 +44,7 @@ public class SpreadsheetUnmarshallingException extends Exception {
 		return payloads;
 	}
 
-	public List<SpreadsheetViolation> getViolations() {
+	public Set<SpreadsheetViolation> getViolations() {
 		return violations;
 	}
 }

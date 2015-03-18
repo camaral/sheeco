@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import midas.sheeco.exceptions.SpreadsheetUnmarshallingException;
+import midas.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
 import midas.sheeco.processor.Payload;
 import midas.sheeco.processor.PayloadContext;
 import midas.sheeco.processor.PayloadFiller;
@@ -51,13 +52,14 @@ public class Sheeco {
 
 	public <T> List<T> fromSpreadsheet(final File file,
 			final Class<T> payloadClass)
-			throws SpreadsheetUnmarshallingException {
+			throws SpreadsheetUnmarshallingException,
+			SpreasheetUnmarshallingUnrecoverableException {
 		InputStream stream = null;
 		try {
 			stream = new BufferedInputStream(new FileInputStream(file));
 			return fromSpreadsheet(stream, payloadClass);
 		} catch (final FileNotFoundException e) {
-			throw new RuntimeException(
+			throw new SpreasheetUnmarshallingUnrecoverableException(
 					String.format("sheeco.serializer.file.cannot.open"));
 		} finally {
 			close(stream);
@@ -66,7 +68,8 @@ public class Sheeco {
 
 	public <T> List<T> fromSpreadsheet(final InputStream stream,
 			final Class<T> payloadClass)
-			throws SpreadsheetUnmarshallingException {
+			throws SpreadsheetUnmarshallingException,
+			SpreasheetUnmarshallingUnrecoverableException {
 		try {
 			final Workbook wb = WorkbookFactory.create(stream);
 			final Payload<T> payload = new Payload<>(payloadClass);
@@ -76,13 +79,22 @@ public class Sheeco {
 			final FormulaEvaluator evaluator = wb.getCreationHelper()
 					.createFormulaEvaluator();
 
-			return readPayloads(new PayloadContext<>(sheet, evaluator, payload));
+			final PayloadContext<T> ctx = new PayloadContext<>(sheet,
+					evaluator, payload);
+			final List<T> payloads = readPayloads(ctx);
+
+			if (ctx.getViolations().isEmpty()) {
+				return payloads;
+			} else {
+				throw new SpreadsheetUnmarshallingException(payloads,
+						ctx.getViolations());
+			}
 
 		} catch (final FileNotFoundException e) {
-			throw new RuntimeException(
+			throw new SpreasheetUnmarshallingUnrecoverableException(
 					String.format("sheeco.serializer.file.cannot.open"));
 		} catch (final IOException | InvalidFormatException e) {
-			throw new RuntimeException(
+			throw new SpreasheetUnmarshallingUnrecoverableException(
 					String.format("sheeco.serializer.file.wrong.format"));
 		}
 	}
@@ -102,7 +114,7 @@ public class Sheeco {
 		final Sheet sheet = wb.getSheet(sheetName);
 
 		if (sheet == null) {
-			throw new AssertionError(
+			throw new SpreasheetUnmarshallingUnrecoverableException(
 					"Spreadsheet does not contain a sheet named with \""
 							+ sheetName + "\"");
 		}
@@ -130,7 +142,7 @@ public class Sheeco {
 				// if the blank rows limit is reached, throws an exception
 				++blankRowCount;
 				if (blankRowCount >= MAX_BLANK_ROWS) {
-					throw new RuntimeException(
+					throw new SpreasheetUnmarshallingUnrecoverableException(
 							"serializer.spreadsheet.row.too.many.blank");
 				}
 			}
