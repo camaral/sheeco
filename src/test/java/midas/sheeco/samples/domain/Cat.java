@@ -29,10 +29,10 @@ import midas.sheeco.annotation.SpreadsheetPayload;
 public class Cat {
 	@SpreadsheetAttribute(index = 0)
 	private String name;
-	@SpreadsheetAttribute(index = 2, name = "Birth date")
-	private Date birthDate;
 	@SpreadsheetAttribute(index = 1, name = "Male?")
 	private Boolean male;
+	@SpreadsheetAttribute(index = 2, name = "Birth date")
+	private Date birthDate;
 
 	@SpreadsheetElement(index = 3)
 	private Fur body;

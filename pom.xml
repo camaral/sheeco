@@ -8,7 +8,31 @@
 	<packaging>jar</packaging>
 
 	<name>Sheeco</name>
+	<description>Marshalling and unmarshalling Spreadsheets to Java Objects</description>
 	<url>https://github.com/camaral1/sheeco</url>
+
+	<developers>
+		<developer>
+			<name>Caio Amaral</name>
+			<email>paran01d@bol.com.br</email>
+			<organization>Midas</organization>
+			<organizationUrl>https://github.com/camaral1</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:camaral1/sheeco.git</connection>
+		<developerConnection>scm:git:git@github.com:camaral1/sheeco.git</developerConnection>
+		<url>git@github.com:camaral1/sheeco.git</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<build>
 		<plugins>

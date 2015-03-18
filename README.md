@@ -12,10 +12,10 @@ Tor|2014/11/11|true|3|black|0|grey
 public class Cat {
 	@SpreadsheetAttribute(index = 0)
 	String name;
-	@SpreadsheetAttribute(index = 2, name="Birth date")
-	Date birthDate;
 	@SpreadsheetAttribute(index = 1, name="Male?")
 	Boolean male;
+	@SpreadsheetAttribute(index = 2, name="Birth date")
+	Date birthDate;
 
 	@SpreadsheetElement(index = 3)
 	Fur body;
