@@ -41,8 +41,8 @@ public class AttributeScannerTest {
 	public void testReadIndexes() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
 		Assert.assertEquals(0, attributes.get(0).getColumnIndex());
-		Assert.assertEquals(2, attributes.get(1).getColumnIndex());
-		Assert.assertEquals(1, attributes.get(2).getColumnIndex());
+		Assert.assertEquals(1, attributes.get(1).getColumnIndex());
+		Assert.assertEquals(2, attributes.get(2).getColumnIndex());
 	}
 
 	@Test
@@ -54,8 +54,8 @@ public class AttributeScannerTest {
 	@Test
 	public void testReadAnnotationNames() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals("Birth date", attributes.get(1).getColumnName());
-		Assert.assertEquals("Male?", attributes.get(2).getColumnName());
+		Assert.assertEquals("Male?", attributes.get(1).getColumnName());
+		Assert.assertEquals("Birth date", attributes.get(2).getColumnName());
 	}
 
 	@Test
@@ -63,10 +63,11 @@ public class AttributeScannerTest {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
 		Assert.assertEquals(SpreadsheetStringAdapter.class, attributes.get(0)
 				.getTypeAdapter().getClass());
-		Assert.assertEquals(SpreadsheetDateAdapter.class, attributes.get(1)
+		Assert.assertEquals(SpreadsheetBooleanAdapter.class, attributes.get(1)
 				.getTypeAdapter().getClass());
-		Assert.assertEquals(SpreadsheetBooleanAdapter.class, attributes.get(2)
+		Assert.assertEquals(SpreadsheetDateAdapter.class, attributes.get(2)
 				.getTypeAdapter().getClass());
+		
 	}
 	
 	@Test

@@ -169,7 +169,7 @@ public class SpreadsheetBooleanAdapterTest {
 		Assert.assertFalse(value);
 	}
 
-	@Test
+	@Test(expected = InvalidCellValueException.class)
 	public void testInvalidString() {
 		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
 
@@ -178,15 +178,10 @@ public class SpreadsheetBooleanAdapterTest {
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellValueException");
-		} catch (InvalidCellValueException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 
-	@Test
+	@Test(expected = InvalidCellValueException.class)
 	public void testInvalidNumeric() {
 		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
 
@@ -197,15 +192,10 @@ public class SpreadsheetBooleanAdapterTest {
 		when(cell.getDateCellValue()).thenReturn(new Date(111111));
 		when(cell.getCellStyle()).thenReturn(style);
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellValueException");
-		} catch (InvalidCellValueException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 
-	@Test
+	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidError() {
 		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
 
@@ -214,15 +204,10 @@ public class SpreadsheetBooleanAdapterTest {
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellFormatException");
-		} catch (InvalidCellFormatException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 
-	@Test
+	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidFormula() {
 		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
 
@@ -231,11 +216,6 @@ public class SpreadsheetBooleanAdapterTest {
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellFormatException");
-		} catch (InvalidCellFormatException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 }

@@ -40,7 +40,7 @@ public class SpreadsheetIntegerAdapterTest {
 		Assert.assertNull(value);
 	}
 
-	@Test
+	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidError() {
 
 		Cell cell = mock(Cell.class);
@@ -48,15 +48,10 @@ public class SpreadsheetIntegerAdapterTest {
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellFormatException");
-		} catch (InvalidCellFormatException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 
-	@Test
+	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidFormula() {
 
 		Cell cell = mock(Cell.class);
@@ -64,12 +59,7 @@ public class SpreadsheetIntegerAdapterTest {
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		try {
-			adapter.fromSpreadsheet(cell);
-			Assert.fail("Should have thrown InvalidCellFormatException");
-		} catch (InvalidCellFormatException e) {
-			// success
-		}
+		adapter.fromSpreadsheet(cell);
 	}
 
 }

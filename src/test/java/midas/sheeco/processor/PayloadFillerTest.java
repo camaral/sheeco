@@ -46,8 +46,8 @@ public class PayloadFillerTest {
 		final Cell cell = Mockito.mock(Cell.class);
 		final RichTextString richString = Mockito.mock(RichTextString.class);
 
-		Mockito.when(richString.getString()).thenReturn("Floofly",
-				"2014-12-12 01:01:01.000", "0");
+		Mockito.when(richString.getString()).thenReturn("Floofly", "0",
+				"2014-12-12 01:01:01.000");
 		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
 		Mockito.when(
 				row.getCell(Mockito.anyInt(),
