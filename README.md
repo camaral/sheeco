@@ -1,5 +1,8 @@
 # sheeco
 
+[![Build Status](https://travis-ci.org/camaral/sheeco.svg)](https://travis-ci.org/camaral/sheeco)
+
+
 Marshalling and unmarshalling Spreadsheets to Java Objects
 
 Name|Male?|Birth date|hairLength|hairColor|hairLength|hairColor
