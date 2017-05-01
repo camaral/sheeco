@@ -26,8 +26,11 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.processor.PayloadContext;
@@ -40,13 +43,23 @@ import com.github.camaral.sheeco.samples.domain.Cat;
  */
 public class PayloadFillerTest {
 
+	@Mock
+	private Sheet sheet;
+	@Mock
+	private Row row;
+	@Mock
+	private Cell cell;
+	@Mock
+	private RichTextString richString;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
+
 	@Test
 	public void fillAllAttributes() throws ParseException {
-		final Sheet sheet = Mockito.mock(Sheet.class);
-		final Row row = Mockito.mock(Row.class);
-		final Cell cell = Mockito.mock(Cell.class);
-		final RichTextString richString = Mockito.mock(RichTextString.class);
-
+		// given
 		Mockito.when(richString.getString()).thenReturn("Floofly", "0",
 				"2014-12-12 01:01:01.000");
 		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
@@ -63,8 +76,10 @@ public class PayloadFillerTest {
 		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
 				payload);
 
+		// when
 		PayloadFiller.fillAttributes(instance, row, ctx);
 
+		// then
 		Assert.assertEquals("Floofly", instance.getName());
 		Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 				.parse("2014-12-12 01:01:01.000"), instance.getBirthDate());
@@ -73,11 +88,6 @@ public class PayloadFillerTest {
 
 	@Test
 	public void fillAttributesNull() throws ParseException {
-		final Sheet sheet = Mockito.mock(Sheet.class);
-		final Row row = Mockito.mock(Row.class);
-		final Cell cell = Mockito.mock(Cell.class);
-		final RichTextString richString = Mockito.mock(RichTextString.class);
-
 		Mockito.when(richString.getString()).thenReturn("", "", "");
 		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
 		Mockito.when(
@@ -102,11 +112,6 @@ public class PayloadFillerTest {
 
 	@Test
 	public void testFillElements() {
-		final Sheet sheet = Mockito.mock(Sheet.class);
-		final Row row = Mockito.mock(Row.class);
-		final Cell cell = Mockito.mock(Cell.class);
-		final RichTextString richString = Mockito.mock(RichTextString.class);
-
 		Mockito.when(richString.getString()).thenReturn("1", "White", "2",
 				"Black");
 		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
@@ -136,11 +141,6 @@ public class PayloadFillerTest {
 
 	@Test
 	public void testFillElementsNullFields() {
-		final Sheet sheet = Mockito.mock(Sheet.class);
-		final Row row = Mockito.mock(Row.class);
-		final Cell cell = Mockito.mock(Cell.class);
-		final RichTextString richString = Mockito.mock(RichTextString.class);
-
 		// The adapter excepts that the cell return BLANK on NULLs
 		Mockito.when(richString.getString()).thenReturn("", "", "", "");
 		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);

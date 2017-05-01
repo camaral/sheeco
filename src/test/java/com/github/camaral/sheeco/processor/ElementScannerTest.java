@@ -24,7 +24,6 @@ import org.junit.Test;
 import com.github.camaral.sheeco.annotation.SpreadsheetAttribute;
 import com.github.camaral.sheeco.annotation.SpreadsheetElement;
 import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
-import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
 import com.github.camaral.sheeco.processor.Element;
 import com.github.camaral.sheeco.processor.ElementScanner;
 import com.github.camaral.sheeco.samples.domain.Cat;
@@ -58,19 +57,9 @@ public class ElementScannerTest {
 		Assert.assertTrue(ElementScanner.scan(String.class).isEmpty());
 	}
 
-	@Test
+	@Test(expected = AssertionError.class)
 	public void testMoreThanOneList() {
-		try {
-			ElementScanner.scan(InvalidTwoList.class);
-
-			Assert.fail("Should have thrown "
-					+ SpreasheetUnmarshallingUnrecoverableException.class
-							.getName());
-		} catch (AssertionError e) {
-			Assert.assertEquals(
-					"Payload cannot hold more than one list of com.github.camaral.sheeco.annotation.SpreadsheetElement",
-					e.getMessage());
-		}
+		ElementScanner.scan(InvalidTwoList.class);
 	}
 }
 

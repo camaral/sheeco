@@ -30,7 +30,10 @@ public class PayloadTest {
 
 	@Test
 	public void testElements() {
+		// when
 		Payload<Cat> payload = new Payload<>(Cat.class);
+		
+		// then
 		Assert.assertNotNull(payload.getElements());
 		Assert.assertFalse(payload.getElements().isEmpty());
 		Assert.assertEquals(3, payload.getElements().get(0)
