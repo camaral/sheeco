@@ -4,7 +4,7 @@
 
 	<groupId>com.github.camaral</groupId>
 	<artifactId>sheeco</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>Sheeco</name>
 	<description>Marshalling and unmarshalling Spreadsheets to Java Objects</description>
