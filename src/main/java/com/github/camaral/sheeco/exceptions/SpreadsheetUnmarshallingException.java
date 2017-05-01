@@ -21,7 +21,7 @@ import java.util.Set;
 
 /**
  * This exception is thrown when the spreadsheet was read, but some violations
- * where found. The piece of payloads that where read is hold under
+ * where found. The pieces of payload that could be read are under
  * {@link #getPayloads()}. The exception can be used to recreate the
  * spreadsheet, highlighting the violations.
  * 

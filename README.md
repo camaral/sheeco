@@ -3,12 +3,27 @@
 [![Build Status](https://travis-ci.org/camaral/sheeco.svg)](https://travis-ci.org/camaral/sheeco)
 
 
-Marshalling and unmarshalling Spreadsheets to Java Objects
+Marshalling and unmarshalling Excel Spreadsheets to Java Objects using annotations.
+It takes only 4 steps to start using it.
+
+1. Add maven dependency to your project.
+
+```xml
+<dependency>
+  <groupId>com.github.camaral</groupId>
+  <artifactId>sheeco</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+2. Create a Excel spreadsheet.
 
 Name|Male?|Birth date|hairLength|hairColor|hairLength|hairColor
 ----|----------|-----|----------|---------|----------|---------
 Floofly|false|2014/12/12|1|orange|1|yellow
 Tor|true|2014/11/11|3|black|0|grey
+
+3. Describe the Excel spread sheet on Java classes.
 
 ```java
 @SpreadsheetPayload(name = "Cat")
@@ -36,6 +51,8 @@ public class Fur {
 	private String hairColor;
 }
 ```
+
+4. Read the spreadsheet from a File or from an InputStream.
 
 ```java
 List<Cat> cats = Sheeco.fromSpreadsheet(new File(cats.xls), Cat.class);
