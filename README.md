@@ -25,5 +25,15 @@ public class Cat {
 ```
 
 ```java
+@SpreadsheetPayload(name = "Fur")
+public class Fur {
+	@SpreadsheetAttribute(index = 0)
+	private Integer hairLength;
+	@SpreadsheetAttribute(index = 1)
+	private String hairColor;
+}
+```
+
+```java
 List<Cat> cats = Sheeco.fromSpreadsheet(new File(cats.xls), Cat.class);
 ```

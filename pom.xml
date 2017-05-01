@@ -2,28 +2,32 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>midas</groupId>
+	<groupId>com.github.camaral</groupId>
 	<artifactId>sheeco</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<name>Sheeco</name>
 	<description>Marshalling and unmarshalling Spreadsheets to Java Objects</description>
-	<url>https://github.com/camaral1/sheeco</url>
+	<url>https://github.com/camaral/sheeco</url>
 
 	<developers>
 		<developer>
 			<name>Caio Amaral</name>
 			<email>paran01d@bol.com.br</email>
-			<organization>Midas</organization>
-			<organizationUrl>https://github.com/camaral1</organizationUrl>
+			<organization>camaral</organization>
+			<organizationUrl>https://github.com/camaral</organizationUrl>
 		</developer>
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:camaral1/sheeco.git</connection>
-		<developerConnection>scm:git:git@github.com:camaral1/sheeco.git</developerConnection>
-		<url>git@github.com:camaral1/sheeco.git</url>
+		<connection>scm:git:git@github.com:camaral/sheeco.git</connection>
+		<developerConnection>scm:git:git@github.com:camaral/sheeco.git</developerConnection>
+		<url>git@github.com:camaral/sheeco.git</url>
 	</scm>
 
 	<licenses>
