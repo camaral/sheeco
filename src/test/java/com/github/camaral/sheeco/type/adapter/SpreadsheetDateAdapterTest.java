@@ -25,7 +25,10 @@ import junit.framework.Assert;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.github.camaral.sheeco.type.adapter.InvalidCellFormatException;
 import com.github.camaral.sheeco.type.adapter.SpreadsheetDateAdapter;
@@ -35,53 +38,66 @@ import com.github.camaral.sheeco.type.adapter.SpreadsheetDateAdapter;
  *
  */
 public class SpreadsheetDateAdapterTest {
-	private final SpreadsheetDateAdapter adapter = new SpreadsheetDateAdapter();
+	private SpreadsheetDateAdapter sut;
+
+	@Mock
+	private Cell cell;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		sut = new SpreadsheetDateAdapter();
+	}
 
 	@Test
 	public void testNumericTypeDate() {
 
+		// given
 		Date expected = new Date(111111);
 
 		CellStyle style = mock(CellStyle.class);
 		when(style.getDataFormat()).thenReturn((short) 0x0e);
-		Cell cell = mock(Cell.class);
+
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_NUMERIC);
 		when(cell.getDateCellValue()).thenReturn(expected);
 		when(cell.getCellStyle()).thenReturn(style);
 
-		Date value = adapter.fromSpreadsheet(cell);
+		// when
+		Date value = sut.fromSpreadsheet(cell);
+
+		// then
 		Assert.assertEquals(expected, value);
 	}
 
 	@Test
 	public void testBlank() {
-
-		Cell cell = mock(Cell.class);
+		// given
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_BLANK);
 
-		Date value = adapter.fromSpreadsheet(cell);
+		// when
+		Date value = sut.fromSpreadsheet(cell);
+
+		// then
 		Assert.assertNull(value);
 	}
 
 	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidError() {
 
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_ERROR);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 
 	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidFormula() {
 
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_FORMULA);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 }

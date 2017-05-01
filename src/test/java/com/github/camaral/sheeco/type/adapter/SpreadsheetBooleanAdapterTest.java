@@ -25,7 +25,10 @@ import junit.framework.Assert;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.github.camaral.sheeco.type.adapter.InvalidCellFormatException;
 import com.github.camaral.sheeco.type.adapter.InvalidCellValueException;
@@ -36,190 +39,166 @@ import com.github.camaral.sheeco.type.adapter.SpreadsheetBooleanAdapter;
  *
  */
 public class SpreadsheetBooleanAdapterTest {
+
+	private SpreadsheetBooleanAdapter sut;
+
+	@Mock
+	private Cell cell;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		sut = new SpreadsheetBooleanAdapter();
+	}
+
 	@Test
 	public void testBooleanTypeTrue() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
+		// given
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_BOOLEAN);
 		when(cell.getBooleanCellValue()).thenReturn(true);
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		// when
+		Boolean value = sut.fromSpreadsheet(cell);
+
+		// then
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testBooleanTypeFalse() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
+		// given
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_BOOLEAN);
 		when(cell.getBooleanCellValue()).thenReturn(false);
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		// when
+		Boolean value = sut.fromSpreadsheet(cell);
+
+		// then
 		Assert.assertFalse(value);
 	}
 
 	@Test
 	public void testBlank() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_BLANK);
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertNull(value);
 	}
 
 	@Test
 	public void testNumericTrue() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_NUMERIC);
 		when(cell.getNumericCellValue()).thenReturn(2d);
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testNumericFalse() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_NUMERIC);
 		when(cell.getNumericCellValue()).thenReturn(0d);
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertFalse(value);
 	}
 
 	@Test
 	public void testStringTrue() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("TRUe"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testStringYes() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("YeS"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testString1() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("1"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertTrue(value);
 	}
 
 	@Test
 	public void testStringFalse() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("FaLsE"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertFalse(value);
 	}
 
 	@Test
 	public void testStringNo() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("nO"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertFalse(value);
 	}
 
 	@Test
 	public void testString0() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("0"));
 
-		Boolean value = adapter.fromSpreadsheet(cell);
+		Boolean value = sut.fromSpreadsheet(cell);
 		Assert.assertFalse(value);
 	}
 
 	@Test(expected = InvalidCellValueException.class)
 	public void testInvalidString() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 
 	@Test(expected = InvalidCellValueException.class)
 	public void testInvalidNumeric() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
 		CellStyle style = mock(CellStyle.class);
 		when(style.getDataFormat()).thenReturn((short) 0x0e);
-		Cell cell = mock(Cell.class);
+
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_NUMERIC);
 		when(cell.getDateCellValue()).thenReturn(new Date(111111));
 		when(cell.getCellStyle()).thenReturn(style);
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 
 	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidError() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_ERROR);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 
 	@Test(expected = InvalidCellFormatException.class)
 	public void testInvalidFormula() {
-		SpreadsheetBooleanAdapter adapter = new SpreadsheetBooleanAdapter();
-
-		Cell cell = mock(Cell.class);
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_FORMULA);
 		when(cell.getRichStringCellValue()).thenReturn(
 				new HSSFRichTextString("Vida"));
 
-		adapter.fromSpreadsheet(cell);
+		sut.fromSpreadsheet(cell);
 	}
 }
