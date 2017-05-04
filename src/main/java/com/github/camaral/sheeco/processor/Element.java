@@ -61,12 +61,12 @@ public class Element {
 				field.set(payload, theElement);
 			}
 		} catch (final IllegalArgumentException e) {
-			throw new RuntimeException(
-					"Setting an invalid value or field does not belongs to payload. May be an programming error",
+			throw new IllegalStateException(
+					"Setting an invalid value or field does not belongs to payload. It may be an programming error.",
 					e);
 		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(
-					"Field is unaccessable. May be an programming error", e);
+			throw new IllegalStateException(
+					"Field is unaccessable. It may be an programming error", e);
 		}
 	}
 
