@@ -165,7 +165,8 @@ public class Sheeco {
 			try {
 				stream.close();
 			} catch (final IOException e) {
-				throw new RuntimeException(e);
+				throw new SpreasheetUnmarshallingUnrecoverableException(
+						String.format("sheeco.serializer.file.cannot.close"));
 			}
 		}
 	}
