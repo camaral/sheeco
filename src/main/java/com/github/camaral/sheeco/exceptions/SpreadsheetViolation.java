@@ -144,9 +144,10 @@ public class SpreadsheetViolation {
 			return OriginalCellType.ERROR;
 		case Cell.CELL_TYPE_FORMULA:
 			return OriginalCellType.FORMULA;
+		default:
+			throw new UnsupportedOperationException("CellType "
+					+ cell.getCellType() + " is invalid");
 		}
-		throw new UnsupportedOperationException("CellType "
-				+ cell.getCellType() + " is invalid");
 	}
 
 }

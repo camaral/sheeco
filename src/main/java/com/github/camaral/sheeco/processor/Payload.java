@@ -18,6 +18,7 @@ package com.github.camaral.sheeco.processor;
 import java.util.List;
 
 import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
+import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
 
 /**
  * @author caio.amaral
@@ -68,7 +69,7 @@ public class Payload<T> {
 		try {
 			return clazz.newInstance();
 		} catch (final Exception e) {
-			throw new RuntimeException(
+			throw new SpreasheetUnmarshallingUnrecoverableException(
 					"No-args constructor must be present for deserialization");
 		}
 	}

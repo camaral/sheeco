@@ -74,11 +74,11 @@ public class Element {
 		try {
 			return this.field.get(payload);
 		} catch (final IllegalArgumentException e) {
-			throw new RuntimeException(
+			throw new IllegalStateException(
 					"Field does not belongs to payload. May be an programming error",
 					e);
 		} catch (final IllegalAccessException e) {
-			throw new RuntimeException(
+			throw new IllegalStateException(
 					"Field is unaccessable. May be an programming error", e);
 		}
 	}
