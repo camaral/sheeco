@@ -39,7 +39,7 @@ public class SpreadsheetDoubleAdapterTest {
 	private Cell cell;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		sut = new SpreadsheetDoubleAdapter();
 	}

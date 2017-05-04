@@ -44,7 +44,7 @@ public class SpreadsheetDateAdapterTest {
 	private Cell cell;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		sut = new SpreadsheetDateAdapter();
 	}

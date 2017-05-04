@@ -39,7 +39,7 @@ public class SpreadsheetStringAdapterTest {
 	private Cell cell;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		sut = new SpreadsheetStringAdapter();
 	}

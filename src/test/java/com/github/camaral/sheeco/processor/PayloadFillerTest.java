@@ -53,7 +53,7 @@ public class PayloadFillerTest {
 	private RichTextString richString;
 
 	@Before
-	public void setup() {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 	}
 
