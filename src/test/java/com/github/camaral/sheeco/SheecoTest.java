@@ -28,7 +28,7 @@ import com.github.camaral.sheeco.samples.domain.Cat;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class SheecoTest {
 
@@ -70,10 +70,7 @@ public class SheecoTest {
 
 	private void assertsFromViolationSpreadsheet(List<Cat> cats) {
 
-		Assert.assertEquals(3, cats.size());
-		Assert.assertEquals(cats.get(0).getName(), "Puss");
-		Assert.assertEquals(cats.get(1).getName(), "billie");
-		Assert.assertEquals(cats.get(2).getName(), "snow ball");
+		assertCompleteFields(cats);
 
 		Assert.assertNotNull(cats.get(0).getBirthDate());
 		Assert.assertNull(cats.get(1).getBirthDate());
@@ -83,18 +80,10 @@ public class SheecoTest {
 		Assert.assertFalse(cats.get(1).isMale());
 		Assert.assertTrue(cats.get(2).isMale());
 
-		Assert.assertEquals("orange", cats.get(0).getBody().getHairColor());
-		Assert.assertEquals("black", cats.get(1).getBody().getHairColor());
-		Assert.assertEquals("white", cats.get(2).getBody().getHairColor());
-
 		Assert.assertEquals(Integer.valueOf(1), cats.get(0).getBody()
 				.getHairLength());
 		Assert.assertNull(cats.get(1).getBody().getHairLength());
 		Assert.assertNull(cats.get(2).getBody().getHairLength());
-
-		Assert.assertEquals("gray", cats.get(0).getTail().getHairColor());
-		Assert.assertEquals("white", cats.get(1).getTail().getHairColor());
-		Assert.assertEquals("white", cats.get(2).getTail().getHairColor());
 
 		Assert.assertEquals(Integer.valueOf(2), cats.get(0).getTail()
 				.getHairLength());
@@ -105,10 +94,7 @@ public class SheecoTest {
 
 	private void assertsFromSpreadsheet(List<Cat> cats) {
 
-		Assert.assertEquals(3, cats.size());
-		Assert.assertEquals(cats.get(0).getName(), "Puss");
-		Assert.assertEquals(cats.get(1).getName(), "billie");
-		Assert.assertEquals(cats.get(2).getName(), "snow ball");
+		assertCompleteFields(cats);
 
 		Assert.assertNotNull(cats.get(0).getBirthDate());
 		Assert.assertNotNull(cats.get(1).getBirthDate());
@@ -118,10 +104,6 @@ public class SheecoTest {
 		Assert.assertFalse(cats.get(1).isMale());
 		Assert.assertTrue(cats.get(2).isMale());
 
-		Assert.assertEquals("orange", cats.get(0).getBody().getHairColor());
-		Assert.assertEquals("black", cats.get(1).getBody().getHairColor());
-		Assert.assertEquals("white", cats.get(2).getBody().getHairColor());
-
 		Assert.assertEquals(Integer.valueOf(1), cats.get(0).getBody()
 				.getHairLength());
 		Assert.assertEquals(Integer.valueOf(4), cats.get(1).getBody()
@@ -129,15 +111,36 @@ public class SheecoTest {
 		Assert.assertEquals(Integer.valueOf(5), cats.get(2).getBody()
 				.getHairLength());
 
-		Assert.assertEquals("gray", cats.get(0).getTail().getHairColor());
-		Assert.assertEquals("white", cats.get(1).getTail().getHairColor());
-		Assert.assertEquals("white", cats.get(2).getTail().getHairColor());
-
 		Assert.assertEquals(Integer.valueOf(2), cats.get(0).getTail()
 				.getHairLength());
 		Assert.assertEquals(Integer.valueOf(4), cats.get(1).getTail()
 				.getHairLength());
 		Assert.assertEquals(Integer.valueOf(2), cats.get(2).getTail()
 				.getHairLength());
+	}
+
+	private void assertCompleteFields(List<Cat> cats) {
+		assertNames(cats);
+		assertBodyHairColor(cats);
+		assertTailHairColor(cats);
+	}
+
+	private void assertBodyHairColor(List<Cat> cats) {
+		Assert.assertEquals("orange", cats.get(0).getBody().getHairColor());
+		Assert.assertEquals("black", cats.get(1).getBody().getHairColor());
+		Assert.assertEquals("white", cats.get(2).getBody().getHairColor());
+	}
+
+	private void assertTailHairColor(List<Cat> cats) {
+		Assert.assertEquals("gray", cats.get(0).getTail().getHairColor());
+		Assert.assertEquals("white", cats.get(1).getTail().getHairColor());
+		Assert.assertEquals("white", cats.get(2).getTail().getHairColor());
+	}
+
+	private void assertNames(List<Cat> cats) {
+		Assert.assertEquals(3, cats.size());
+		Assert.assertEquals(cats.get(0).getName(), "Puss");
+		Assert.assertEquals(cats.get(1).getName(), "billie");
+		Assert.assertEquals(cats.get(2).getName(), "snow ball");
 	}
 }
