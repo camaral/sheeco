@@ -19,11 +19,12 @@ package com.github.camaral.sheeco.exceptions;
 import java.io.Serializable;
 
 public class RowRange implements Serializable {
-	private static final long serialVersionUID = 1;
 	/**
 	 * no specific row
 	 */
-	static RowRange NO_ROW = new RowRange(-1);
+	public static RowRange NO_ROW = new RowRange(-1);
+	
+	private static final long serialVersionUID = 1;
 	private final int startIndex;
 	private final int endIndex;
 
