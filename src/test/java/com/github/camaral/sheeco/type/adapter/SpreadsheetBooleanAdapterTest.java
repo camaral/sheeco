@@ -20,23 +20,22 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.Test;
 
-import com.github.camaral.sheeco.type.adapter.InvalidCellFormatException;
 import com.github.camaral.sheeco.type.adapter.InvalidCellValueException;
 import com.github.camaral.sheeco.type.adapter.SpreadsheetBooleanAdapter;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class SpreadsheetBooleanAdapterTest {
 
@@ -45,7 +44,7 @@ public class SpreadsheetBooleanAdapterTest {
 	@Mock
 	private Cell cell;
 
-	@Before
+	@BeforeMethod
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		sut = new SpreadsheetBooleanAdapter();
@@ -163,7 +162,7 @@ public class SpreadsheetBooleanAdapterTest {
 		Assert.assertFalse(value);
 	}
 
-	@Test(expected = InvalidCellValueException.class)
+	@Test(expectedExceptions = InvalidCellValueException.class)
 	public void testInvalidString() {
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(
@@ -172,7 +171,7 @@ public class SpreadsheetBooleanAdapterTest {
 		sut.fromSpreadsheet(cell);
 	}
 
-	@Test(expected = InvalidCellValueException.class)
+	@Test(expectedExceptions = InvalidCellValueException.class)
 	public void testInvalidNumeric() {
 		CellStyle style = mock(CellStyle.class);
 		when(style.getDataFormat()).thenReturn((short) 0x0e);
@@ -184,21 +183,4 @@ public class SpreadsheetBooleanAdapterTest {
 		sut.fromSpreadsheet(cell);
 	}
 
-	@Test(expected = InvalidCellFormatException.class)
-	public void testInvalidError() {
-		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_ERROR);
-		when(cell.getRichStringCellValue()).thenReturn(
-				new HSSFRichTextString("Vida"));
-
-		sut.fromSpreadsheet(cell);
-	}
-
-	@Test(expected = InvalidCellFormatException.class)
-	public void testInvalidFormula() {
-		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_FORMULA);
-		when(cell.getRichStringCellValue()).thenReturn(
-				new HSSFRichTextString("Vida"));
-
-		sut.fromSpreadsheet(cell);
-	}
 }

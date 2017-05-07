@@ -18,9 +18,9 @@ package com.github.camaral.sheeco;
 import java.io.File;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.Sheeco;
 import com.github.camaral.sheeco.exceptions.SpreadsheetUnmarshallingException;

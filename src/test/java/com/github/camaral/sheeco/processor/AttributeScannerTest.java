@@ -17,9 +17,9 @@ package com.github.camaral.sheeco.processor;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.processor.Attribute;
 import com.github.camaral.sheeco.processor.AttributeScanner;

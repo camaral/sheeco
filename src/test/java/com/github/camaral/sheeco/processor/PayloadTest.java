@@ -15,8 +15,8 @@
  */
 package com.github.camaral.sheeco.processor;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.samples.domain.Cat;

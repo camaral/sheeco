@@ -17,9 +17,9 @@ package com.github.camaral.sheeco.processor;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.annotation.SpreadsheetAttribute;
 import com.github.camaral.sheeco.annotation.SpreadsheetElement;
@@ -57,7 +57,7 @@ public class ElementScannerTest {
 		Assert.assertTrue(ElementScanner.scan(String.class).isEmpty());
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test(expectedExceptions = AssertionError.class)
 	public void testMoreThanOneList() {
 		ElementScanner.scan(InvalidTwoList.class);
 	}

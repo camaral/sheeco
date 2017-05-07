@@ -18,7 +18,7 @@ package com.github.camaral.sheeco.processor;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -26,8 +26,8 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -52,7 +52,7 @@ public class PayloadFillerTest {
 	@Mock
 	private RichTextString richString;
 
-	@Before
+	@BeforeMethod
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 	}
