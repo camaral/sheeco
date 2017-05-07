@@ -66,14 +66,26 @@ public class ElementScannerTest {
 @SpreadsheetPayload(name = "InvalidPayload")
 class InvalidTwoList {
 	@SpreadsheetElement(index = 0)
-	private List<B> b1;
+	private List<DummyPayload> list;
 
 	@SpreadsheetElement(index = 0)
-	private List<B> b2;
+	private List<DummyPayload> cannotDeclareAnotherList;
+
+	public List<DummyPayload> getList() {
+		return list;
+	}
+
+	public List<DummyPayload> getCannotDeclareAnotherList() {
+		return cannotDeclareAnotherList;
+	}
 }
 
 @SpreadsheetPayload(name = "B")
-class B {
+class DummyPayload {
 	@SpreadsheetAttribute(index = 0)
-	private Integer b;
+	private Integer dummyField;
+
+	public Integer getDummyField() {
+		return dummyField;
+	}
 }
