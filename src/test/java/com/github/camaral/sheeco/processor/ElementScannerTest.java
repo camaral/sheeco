@@ -31,20 +31,20 @@ import com.github.camaral.sheeco.samples.domain.Fur;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class ElementScannerTest {
 	@Test
 	public void testElements() {
 		final List<Element> elements = ElementScanner.scan(Cat.class);
-		Assert.assertEquals(2, elements.size());
+		Assert.assertEquals(elements.size(), 2);
 
-		Assert.assertEquals(Fur.class, elements.get(0).getPayload()
-				.getPayloadClass());
-		Assert.assertEquals(3, elements.get(0).getFirstColumnIndex());
-		Assert.assertEquals(Fur.class, elements.get(1).getPayload()
-				.getPayloadClass());
-		Assert.assertEquals(5, elements.get(1).getFirstColumnIndex());
+		Assert.assertEquals(elements.get(0).getPayload().getPayloadClass(),
+				Fur.class);
+		Assert.assertEquals(elements.get(0).getFirstColumnIndex(), 3);
+		Assert.assertEquals(elements.get(1).getPayload().getPayloadClass(),
+				Fur.class);
+		Assert.assertEquals(elements.get(1).getFirstColumnIndex(), 5);
 	}
 
 	@Test

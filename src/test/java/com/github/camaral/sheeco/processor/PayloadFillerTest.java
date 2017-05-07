@@ -39,7 +39,7 @@ import com.github.camaral.sheeco.samples.domain.Cat;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class PayloadFillerTest {
 
@@ -80,10 +80,10 @@ public class PayloadFillerTest {
 		PayloadFiller.fillAttributes(instance, row, ctx);
 
 		// then
-		Assert.assertEquals("Floofly", instance.getName());
-		Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-				.parse("2014-12-12 01:01:01.000"), instance.getBirthDate());
-		Assert.assertEquals(Boolean.FALSE, instance.isMale());
+		Assert.assertEquals(instance.getName(), "Floofly");
+		Assert.assertEquals(instance.getBirthDate(), new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss.SSS").parse("2014-12-12 01:01:01.000"));
+		Assert.assertEquals(instance.isMale(), Boolean.FALSE);
 	}
 
 	@Test
@@ -131,12 +131,12 @@ public class PayloadFillerTest {
 
 		Assert.assertNotNull(instance.getBody());
 		Assert.assertNotNull(instance.getTail());
-		Assert.assertEquals(Integer.valueOf(1), instance.getBody()
-				.getHairLength());
-		Assert.assertEquals(Integer.valueOf(2), instance.getTail()
-				.getHairLength());
-		Assert.assertEquals("White", instance.getBody().getHairColor());
-		Assert.assertEquals("Black", instance.getTail().getHairColor());
+		Assert.assertEquals(instance.getBody().getHairLength(),
+				Integer.valueOf(1));
+		Assert.assertEquals(instance.getTail().getHairLength(),
+				Integer.valueOf(2));
+		Assert.assertEquals(instance.getBody().getHairColor(), "White");
+		Assert.assertEquals(instance.getTail().getHairColor(), "Black");
 	}
 
 	@Test

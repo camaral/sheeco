@@ -64,7 +64,7 @@ public class SpreadsheetDateAdapterTest {
 		Date value = sut.fromSpreadsheet(cell);
 
 		// then
-		Assert.assertEquals(expected, value);
+		Assert.assertEquals(value, expected);
 	}
 
 	@Test

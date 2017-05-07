@@ -30,49 +30,49 @@ import com.github.camaral.sheeco.type.adapter.SpreadsheetStringAdapter;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class AttributeScannerTest {
 
 	@Test
 	public void testReadAll() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals(3, attributes.size());
+		Assert.assertEquals(attributes.size(), 3);
 	}
 
 	@Test
 	public void testReadIndexes() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals(0, attributes.get(0).getColumnIndex());
-		Assert.assertEquals(1, attributes.get(1).getColumnIndex());
-		Assert.assertEquals(2, attributes.get(2).getColumnIndex());
+		Assert.assertEquals(attributes.get(0).getColumnIndex(), 0);
+		Assert.assertEquals(attributes.get(1).getColumnIndex(), 1);
+		Assert.assertEquals(attributes.get(2).getColumnIndex(), 2);
 	}
 
 	@Test
 	public void testReadFieldNames() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals("name", attributes.get(0).getColumnName());
+		Assert.assertEquals(attributes.get(0).getColumnName(), "name");
 	}
 
 	@Test
 	public void testReadAnnotationNames() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals("Male?", attributes.get(1).getColumnName());
-		Assert.assertEquals("Birth date", attributes.get(2).getColumnName());
+		Assert.assertEquals(attributes.get(1).getColumnName(), "Male?");
+		Assert.assertEquals(attributes.get(2).getColumnName(), "Birth date");
 	}
 
 	@Test
 	public void testReadTypes() {
 		final List<Attribute> attributes = AttributeScanner.scan(Cat.class);
-		Assert.assertEquals(SpreadsheetStringAdapter.class, attributes.get(0)
-				.getTypeAdapter().getClass());
-		Assert.assertEquals(SpreadsheetBooleanAdapter.class, attributes.get(1)
-				.getTypeAdapter().getClass());
-		Assert.assertEquals(SpreadsheetDateAdapter.class, attributes.get(2)
-				.getTypeAdapter().getClass());
-		
+		Assert.assertEquals(attributes.get(0).getTypeAdapter().getClass(),
+				SpreadsheetStringAdapter.class);
+		Assert.assertEquals(attributes.get(1).getTypeAdapter().getClass(),
+				SpreadsheetBooleanAdapter.class);
+		Assert.assertEquals(attributes.get(2).getTypeAdapter().getClass(),
+				SpreadsheetDateAdapter.class);
+
 	}
-	
+
 	@Test
 	public void testNotPayload() {
 		Assert.assertTrue(AttributeScanner.scan(String.class).isEmpty());
