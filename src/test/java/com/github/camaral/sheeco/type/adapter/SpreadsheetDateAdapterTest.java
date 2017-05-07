@@ -20,17 +20,15 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.camaral.sheeco.type.adapter.InvalidCellFormatException;
 import com.github.camaral.sheeco.type.adapter.SpreadsheetDateAdapter;
 
 /**
@@ -43,8 +41,8 @@ public class SpreadsheetDateAdapterTest {
 	@Mock
 	private Cell cell;
 
-	@Before
-	public void setup() {
+	@BeforeMethod
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		sut = new SpreadsheetDateAdapter();
 	}
@@ -66,7 +64,7 @@ public class SpreadsheetDateAdapterTest {
 		Date value = sut.fromSpreadsheet(cell);
 
 		// then
-		Assert.assertEquals(expected, value);
+		Assert.assertEquals(value, expected);
 	}
 
 	@Test
@@ -81,23 +79,4 @@ public class SpreadsheetDateAdapterTest {
 		Assert.assertNull(value);
 	}
 
-	@Test(expected = InvalidCellFormatException.class)
-	public void testInvalidError() {
-
-		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_ERROR);
-		when(cell.getRichStringCellValue()).thenReturn(
-				new HSSFRichTextString("Vida"));
-
-		sut.fromSpreadsheet(cell);
-	}
-
-	@Test(expected = InvalidCellFormatException.class)
-	public void testInvalidFormula() {
-
-		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_FORMULA);
-		when(cell.getRichStringCellValue()).thenReturn(
-				new HSSFRichTextString("Vida"));
-
-		sut.fromSpreadsheet(cell);
-	}
 }

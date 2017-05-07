@@ -23,8 +23,8 @@ import org.apache.poi.ss.usermodel.Cell;
 
 public class OriginalCellValue implements Serializable {
 	private static final long serialVersionUID = 4057608708534345778L;
-	final OriginalCellType type;
-	final Object value;
+	private final OriginalCellType type;
+	private final Object value;
 
 	public OriginalCellValue(final OriginalCellType type, final Object value) {
 		this.type = type;

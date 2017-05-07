@@ -17,9 +17,9 @@ package com.github.camaral.sheeco.processor;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.annotation.SpreadsheetAttribute;
 import com.github.camaral.sheeco.annotation.SpreadsheetElement;
@@ -31,20 +31,20 @@ import com.github.camaral.sheeco.samples.domain.Fur;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class ElementScannerTest {
 	@Test
 	public void testElements() {
 		final List<Element> elements = ElementScanner.scan(Cat.class);
-		Assert.assertEquals(2, elements.size());
+		Assert.assertEquals(elements.size(), 2);
 
-		Assert.assertEquals(Fur.class, elements.get(0).getPayload()
-				.getPayloadClass());
-		Assert.assertEquals(3, elements.get(0).getFirstColumnIndex());
-		Assert.assertEquals(Fur.class, elements.get(1).getPayload()
-				.getPayloadClass());
-		Assert.assertEquals(5, elements.get(1).getFirstColumnIndex());
+		Assert.assertEquals(elements.get(0).getPayload().getPayloadClass(),
+				Fur.class);
+		Assert.assertEquals(elements.get(0).getFirstColumnIndex(), 3);
+		Assert.assertEquals(elements.get(1).getPayload().getPayloadClass(),
+				Fur.class);
+		Assert.assertEquals(elements.get(1).getFirstColumnIndex(), 5);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class ElementScannerTest {
 		Assert.assertTrue(ElementScanner.scan(String.class).isEmpty());
 	}
 
-	@Test(expected = AssertionError.class)
+	@Test(expectedExceptions = AssertionError.class)
 	public void testMoreThanOneList() {
 		ElementScanner.scan(InvalidTwoList.class);
 	}
@@ -66,14 +66,26 @@ public class ElementScannerTest {
 @SpreadsheetPayload(name = "InvalidPayload")
 class InvalidTwoList {
 	@SpreadsheetElement(index = 0)
-	private List<B> b1;
+	private List<DummyPayload> list;
 
 	@SpreadsheetElement(index = 0)
-	private List<B> b2;
+	private List<DummyPayload> cannotDeclareAnotherList;
+
+	public List<DummyPayload> getList() {
+		return list;
+	}
+
+	public List<DummyPayload> getCannotDeclareAnotherList() {
+		return cannotDeclareAnotherList;
+	}
 }
 
 @SpreadsheetPayload(name = "B")
-class B {
+class DummyPayload {
 	@SpreadsheetAttribute(index = 0)
-	private Integer b;
+	private Integer dummyField;
+
+	public Integer getDummyField() {
+		return dummyField;
+	}
 }

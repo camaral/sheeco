@@ -24,7 +24,4 @@ package com.github.camaral.sheeco.type.adapter;
 public class InvalidCellValueException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public InvalidCellValueException() {
-
-	}
 }

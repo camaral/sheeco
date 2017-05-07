@@ -18,7 +18,7 @@ package com.github.camaral.sheeco.processor;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import junit.framework.Assert;
+import org.testng.Assert;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -26,8 +26,8 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -39,7 +39,7 @@ import com.github.camaral.sheeco.samples.domain.Cat;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class PayloadFillerTest {
 
@@ -51,10 +51,32 @@ public class PayloadFillerTest {
 	private Cell cell;
 	@Mock
 	private RichTextString richString;
+	@Mock
+	private FormulaEvaluator evaluator;
 
-	@Before
-	public void setup() {
+	private Cat instance;
+	private PayloadContext<Cat> ctx;
+
+	@BeforeMethod
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+
+		mockFormulaCell();
+		initContext();
+
+		instance = new Cat();
+	}
+
+	@Test
+	public void testInstance() {
+		// given
+		final Payload<Cat> payload = new Payload<>(Cat.class);
+
+		// when
+		Cat instance = payload.newInstance();
+
+		// then
+		Assert.assertNotNull(instance);
 	}
 
 	@Test
@@ -62,46 +84,19 @@ public class PayloadFillerTest {
 		// given
 		Mockito.when(richString.getString()).thenReturn("Floofly", "0",
 				"2014-12-12 01:01:01.000");
-		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
-		Mockito.when(
-				row.getCell(Mockito.anyInt(),
-						Mockito.any(MissingCellPolicy.class))).thenReturn(cell);
-		Mockito.when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
-
-		final FormulaEvaluator evaluator = Mockito.mock(FormulaEvaluator.class);
-
-		final Payload<Cat> payload = new Payload<>(Cat.class);
-		final Cat instance = payload.newInstance();
-
-		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
-				payload);
 
 		// when
 		PayloadFiller.fillAttributes(instance, row, ctx);
 
 		// then
-		Assert.assertEquals("Floofly", instance.getName());
-		Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-				.parse("2014-12-12 01:01:01.000"), instance.getBirthDate());
-		Assert.assertEquals(Boolean.FALSE, instance.isMale());
+		Assert.assertEquals(instance.getName(), "Floofly");
+		Assert.assertEquals(instance.getBirthDate(), new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss.SSS").parse("2014-12-12 01:01:01.000"));
+		Assert.assertEquals(instance.isMale(), Boolean.FALSE);
 	}
 
 	@Test
 	public void fillAttributesNull() throws ParseException {
-		Mockito.when(richString.getString()).thenReturn("", "", "");
-		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
-		Mockito.when(
-				row.getCell(Mockito.anyInt(),
-						Mockito.any(MissingCellPolicy.class))).thenReturn(cell);
-		Mockito.when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
-
-		final FormulaEvaluator evaluator = Mockito.mock(FormulaEvaluator.class);
-
-		final Payload<Cat> payload = new Payload<>(Cat.class);
-		final Cat instance = payload.newInstance();
-
-		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
-				payload);
 
 		PayloadFiller.fillAttributes(instance, row, ctx);
 
@@ -112,52 +107,32 @@ public class PayloadFillerTest {
 
 	@Test
 	public void testFillElements() {
+		// given
 		Mockito.when(richString.getString()).thenReturn("1", "White", "2",
 				"Black");
-		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
-		Mockito.when(
-				row.getCell(Mockito.anyInt(),
-						Mockito.any(MissingCellPolicy.class))).thenReturn(cell);
-		Mockito.when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 
-		final Payload<Cat> payload = new Payload<>(Cat.class);
-		final Cat instance = payload.newInstance();
-
-		final FormulaEvaluator evaluator = Mockito.mock(FormulaEvaluator.class);
-		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
-				payload);
-
+		// when
 		PayloadFiller.fillElements(instance, row, ctx);
 
+		// then
 		Assert.assertNotNull(instance.getBody());
 		Assert.assertNotNull(instance.getTail());
-		Assert.assertEquals(Integer.valueOf(1), instance.getBody()
-				.getHairLength());
-		Assert.assertEquals(Integer.valueOf(2), instance.getTail()
-				.getHairLength());
-		Assert.assertEquals("White", instance.getBody().getHairColor());
-		Assert.assertEquals("Black", instance.getTail().getHairColor());
+		Assert.assertEquals(instance.getBody().getHairLength(),
+				Integer.valueOf(1));
+		Assert.assertEquals(instance.getTail().getHairLength(),
+				Integer.valueOf(2));
+		Assert.assertEquals(instance.getBody().getHairColor(), "White");
+		Assert.assertEquals(instance.getTail().getHairColor(), "Black");
 	}
 
 	@Test
 	public void testFillElementsNullFields() {
 		// The adapter excepts that the cell return BLANK on NULLs
-		Mockito.when(richString.getString()).thenReturn("", "", "", "");
-		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
-		Mockito.when(
-				row.getCell(Mockito.anyInt(),
-						Mockito.any(MissingCellPolicy.class))).thenReturn(cell);
-		Mockito.when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 
-		final Payload<Cat> payload = new Payload<>(Cat.class);
-		final Cat instance = payload.newInstance();
-
-		final FormulaEvaluator evaluator = Mockito.mock(FormulaEvaluator.class);
-		final PayloadContext<Cat> ctx = new PayloadContext<>(sheet, evaluator,
-				payload);
-
+		// when
 		PayloadFiller.fillElements(instance, row, ctx);
 
+		// then
 		Assert.assertNotNull(instance.getBody());
 		Assert.assertNotNull(instance.getTail());
 		Assert.assertNull(instance.getBody().getHairLength());
@@ -165,4 +140,19 @@ public class PayloadFillerTest {
 		Assert.assertNull(instance.getBody().getHairColor());
 		Assert.assertNull(instance.getTail().getHairColor());
 	}
+
+	private void mockFormulaCell() {
+		Mockito.when(richString.getString()).thenReturn("", "", "");
+		Mockito.when(cell.getRichStringCellValue()).thenReturn(richString);
+		Mockito.when(
+				row.getCell(Mockito.anyInt(),
+						Mockito.any(MissingCellPolicy.class))).thenReturn(cell);
+		Mockito.when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
+	}
+
+	private void initContext() {
+		final Payload<Cat> payload = new Payload<>(Cat.class);
+		ctx = new PayloadContext<>(sheet, evaluator, payload);
+	}
+
 }

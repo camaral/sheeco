@@ -121,9 +121,10 @@ public class SpreadsheetViolation {
 			return cell.getErrorCellValue();
 		case Cell.CELL_TYPE_FORMULA:
 			return cell.getCellFormula();
+		default:
+			throw new UnsupportedOperationException("CellType "
+					+ cell.getCellType() + " is invalid");
 		}
-		throw new UnsupportedOperationException("CellType "
-				+ cell.getCellType() + " is invalid");
 	}
 
 	private static OriginalCellType getCellType(final Cell cell) {
@@ -143,9 +144,10 @@ public class SpreadsheetViolation {
 			return OriginalCellType.ERROR;
 		case Cell.CELL_TYPE_FORMULA:
 			return OriginalCellType.FORMULA;
+		default:
+			throw new UnsupportedOperationException("CellType "
+					+ cell.getCellType() + " is invalid");
 		}
-		throw new UnsupportedOperationException("CellType "
-				+ cell.getCellType() + " is invalid");
 	}
 
 }

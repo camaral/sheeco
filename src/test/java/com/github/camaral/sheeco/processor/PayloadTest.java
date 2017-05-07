@@ -15,8 +15,8 @@
  */
 package com.github.camaral.sheeco.processor;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.samples.domain.Cat;
@@ -24,7 +24,7 @@ import com.github.camaral.sheeco.samples.domain.Fur;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class PayloadTest {
 
@@ -32,17 +32,17 @@ public class PayloadTest {
 	public void testElements() {
 		// when
 		Payload<Cat> payload = new Payload<>(Cat.class);
-		
+
 		// then
 		Assert.assertNotNull(payload.getElements());
 		Assert.assertFalse(payload.getElements().isEmpty());
-		Assert.assertEquals(3, payload.getElements().get(0)
-				.getFirstColumnIndex());
-		Assert.assertEquals(5, payload.getElements().get(1)
-				.getFirstColumnIndex());
-		Assert.assertEquals(Fur.class, payload.getElements().get(0)
-				.getPayload().getPayloadClass());
-		Assert.assertEquals(Fur.class, payload.getElements().get(1)
-				.getPayload().getPayloadClass());
+		Assert.assertEquals(payload.getElements().get(0).getFirstColumnIndex(),
+				3);
+		Assert.assertEquals(payload.getElements().get(1).getFirstColumnIndex(),
+				5);
+		Assert.assertEquals(payload.getElements().get(0).getPayload()
+				.getPayloadClass(), Fur.class);
+		Assert.assertEquals(payload.getElements().get(1).getPayload()
+				.getPayloadClass(), Fur.class);
 	}
 }
