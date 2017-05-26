@@ -35,6 +35,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
 import com.github.camaral.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
 import com.github.camaral.sheeco.processor.Payload;
@@ -50,6 +51,19 @@ public class Sheeco {
 	 */
 	private static final int MAX_BLANK_ROWS = 50;
 
+	/**
+	 * Creates a list of Java objects from a the spreadsheet. The payloadClass
+	 * must be annotated with {@link SpreadsheetPayload}.
+	 * 
+	 * @param file
+	 *            The spreadsheet file
+	 * @param payloadClass
+	 *            The type of the Java objects to be created
+	 * @return the content of the spreadsheet serialized into a list of java
+	 *         objects
+	 * @throws SpreadsheetUnmarshallingException
+	 * @throws SpreasheetUnmarshallingUnrecoverableException
+	 */
 	public <T> List<T> fromSpreadsheet(final File file,
 			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException,
@@ -66,6 +80,19 @@ public class Sheeco {
 		}
 	}
 
+	/**
+	 * Creates a list of Java objects from a the spreadsheet. The payloadClass
+	 * must be annotated with {@link SpreadsheetPayload}.
+	 * 
+	 * @param stream
+	 *            The spreadsheet file
+	 * @param payloadClass
+	 *            The type of the Java objects to be created
+	 * @return the content of the spreadsheet serialized into a list of java
+	 *         objects.
+	 * @throws SpreadsheetUnmarshallingException
+	 * @throws SpreasheetUnmarshallingUnrecoverableException
+	 */
 	public <T> List<T> fromSpreadsheet(final InputStream stream,
 			final Class<T> payloadClass)
 			throws SpreadsheetUnmarshallingException,
@@ -99,11 +126,30 @@ public class Sheeco {
 		}
 	}
 
+	/**
+	 * Creates a spreadsheet with only the headers as described by the set of
+	 * payloadClass, but no data. For each payloadClass a sheet will be created.
+	 * 
+	 * @param payloadClass
+	 *            Java types annotated with {@link SpreadsheetPayload}
+	 * @param stream
+	 *            The output which will receive the content of the spreadsheet
+	 */
 	public void toSpreadsheet(final Set<Class<?>> payloadClass,
 			final OutputStream stream) {
 		throw new RuntimeException("Not Implemented");
 	}
 
+	/**
+	 * Creates a spreadsheet with the headers and the content of the payload
+	 * objects.
+	 * 
+	 * @param payloads
+	 *            Objects of a Java type annotated with
+	 *            {@link SpreadsheetPayload}
+	 * @param out
+	 *            The output which will receive the content of the spreadsheet
+	 */
 	public void toSpreadsheet(final List<? extends Object> payloads,
 			final OutputStream out) {
 		throw new RuntimeException("Not Implemented");

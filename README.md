@@ -18,7 +18,7 @@ It takes only 4 steps to start using it.
 
 2. Create a Excel spreadsheet.
 
-Name|Male?|Birth date|hairLength|hairColor|hairLength|hairColor
+name|Male?|Birth date|hairLength|hairColor|hairLength|hairColor
 ----|----------|-----|----------|---------|----------|---------
 Floofly|false|2014/12/12|1|orange|1|yellow
 Tor|true|2014/11/11|3|black|0|grey
