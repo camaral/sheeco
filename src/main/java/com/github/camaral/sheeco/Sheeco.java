@@ -27,17 +27,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.WorkbookUtil;
 
 import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
 import com.github.camaral.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
+import com.github.camaral.sheeco.processor.Attribute;
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.processor.PayloadContext;
 import com.github.camaral.sheeco.processor.PayloadFiller;
@@ -135,9 +140,24 @@ public class Sheeco {
 	 * @param stream
 	 *            The output which will receive the content of the spreadsheet
 	 */
-	public void toSpreadsheet(final Set<Class<?>> payloadClass,
-			final OutputStream stream) {
-		throw new RuntimeException("Not Implemented");
+	public <T> void toSpreadsheet(final Set<Class<T>> payloadClass,
+			final OutputStream stream) throws IOException {
+
+		final HSSFWorkbook wb = new HSSFWorkbook();
+		final CreationHelper creationHelper = wb.getCreationHelper();
+
+		for (final Class<?> clazz : payloadClass) {
+			final Payload<?> payload = new Payload<>(clazz);
+
+			final Sheet sheet = createSheet(wb, payload.getName());
+			final Row row = createRow(sheet);
+
+			for (Attribute attribute : payload.getAttributes()) {
+				createCell(creationHelper, row, attribute);
+			}
+		}
+
+		wb.write(stream);
 	}
 
 	/**
@@ -147,12 +167,35 @@ public class Sheeco {
 	 * @param payloads
 	 *            Objects of a Java type annotated with
 	 *            {@link SpreadsheetPayload}
-	 * @param out
+	 * @param stream
 	 *            The output which will receive the content of the spreadsheet
 	 */
 	public void toSpreadsheet(final List<? extends Object> payloads,
-			final OutputStream out) {
+			final OutputStream stream) {
 		throw new RuntimeException("Not Implemented");
+	}
+
+	private Sheet createSheet(final HSSFWorkbook wb,
+			final String payloadName) {
+		String sheetName = WorkbookUtil.createSafeSheetName(payloadName);
+		final Sheet sheet = wb.createSheet(sheetName);
+		return sheet;
+	}
+
+	private Row createRow(final Sheet sheet) {
+		sheet.createRow(0);
+		final Row row = sheet.getRow(0);
+		return row;
+	}
+
+	private void createCell(final CreationHelper creationHelper, final Row row,
+			Attribute attribute) {
+		if (row.getCell(attribute.getColumnIndex()) == null) {
+			final Cell cell = row.createCell(attribute.getColumnIndex());
+			RichTextString cellName = creationHelper
+					.createRichTextString(attribute.getColumnName());
+			cell.setCellValue(cellName);
+		}
 	}
 
 	private <T> Sheet getSheet(final String sheetName, final Workbook wb)

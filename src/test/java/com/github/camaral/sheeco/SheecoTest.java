@@ -15,9 +15,18 @@
  */
 package com.github.camaral.sheeco;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.testng.Assert;
 
 import org.testng.annotations.Test;
@@ -30,32 +39,27 @@ import com.github.camaral.sheeco.samples.domain.Cat;
  * @author caio.amaral
  * 
  */
+@Test
 public class SheecoTest {
+	private Sheeco sut = new Sheeco();
 
-	@Test
 	public void testFromXlsxSpreadsheet() throws Exception {
-		Sheeco sheeco = new Sheeco();
 
-		List<Cat> cats = sheeco.fromSpreadsheet(new File(
+		List<Cat> cats = sut.fromSpreadsheet(new File(
 				"src/test/resources/cats.xlsx"), Cat.class);
 		assertsFromSpreadsheet(cats);
 	}
 
-	@Test
 	public void testFromXlsSpreadsheet() throws Exception {
-		Sheeco sheeco = new Sheeco();
-
-		List<Cat> cats = sheeco.fromSpreadsheet(new File(
+		List<Cat> cats = sut.fromSpreadsheet(new File(
 				"src/test/resources/cats.xls"), Cat.class);
 		assertsFromSpreadsheet(cats);
 	}
 
-	@Test
 	@SuppressWarnings("unchecked")
 	public void testViolations() {
 		try {
-			Sheeco sheeco = new Sheeco();
-			sheeco.fromSpreadsheet(new File(
+			sut.fromSpreadsheet(new File(
 					"src/test/resources/cats_violations.xlsx"), Cat.class);
 
 			Assert.fail("Should have thrown SpreadsheetUnmarshallingException");
@@ -66,6 +70,21 @@ public class SheecoTest {
 
 			assertsFromViolationSpreadsheet((List<Cat>) e.getPayloads());
 		}
+	}
+
+	public void testToSpreadsheet() throws Exception {
+		// given
+		Set<Class<Cat>> payloadClasses = Collections.singleton(Cat.class);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		// when
+		sut.toSpreadsheet(payloadClasses, out);
+
+		// then
+		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+		Workbook wb = WorkbookFactory.create(in);
+		assertCatHeaders(wb);
+
 	}
 
 	private void assertsFromViolationSpreadsheet(List<Cat> cats) {
@@ -143,4 +162,18 @@ public class SheecoTest {
 		Assert.assertEquals(cats.get(1).getName(), "billie");
 		Assert.assertEquals(cats.get(2).getName(), "snow ball");
 	}
+
+	private void assertCatHeaders(Workbook wb) {
+		Sheet sheet = wb.getSheet("Cat");
+		Assert.assertNotNull(sheet, "Sheet must be created");
+		Row row = sheet.getRow(0);
+		Assert.assertNotNull(sheet, "Header row must be created");
+		Cell name = row.getCell(0);
+		Assert.assertNotNull(name, "Name header must be created");
+		Assert.assertEquals(name.getStringCellValue(), "name");
+		Cell male = row.getCell(1);
+		Assert.assertNotNull(male, "Male header must be created");
+		Assert.assertEquals(male.getStringCellValue(), "Male?");
+	}
+
 }
