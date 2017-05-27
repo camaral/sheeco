@@ -1,5 +1,6 @@
 # sheeco
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/810b3c1bea194482ae79ceef418c5f9b)](https://www.codacy.com/app/camaral/sheeco?utm_source=github.com&utm_medium=referral&utm_content=camaral/sheeco&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/camaral/sheeco.svg)](https://travis-ci.org/camaral/sheeco)
 
 
