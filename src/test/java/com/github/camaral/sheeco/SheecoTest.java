@@ -184,7 +184,10 @@ public class SheecoTest {
 		assertHeader(row.getCell(0), "name");
 		assertHeader(row.getCell(1), "Male?");
 		assertHeader(row.getCell(2), "Birth date");
-
+		assertHeader(row.getCell(3), "hairLength");
+		assertHeader(row.getCell(4), "hairColor");
+		assertHeader(row.getCell(5), "hairLength");
+		assertHeader(row.getCell(6), "hairColor");
 	}
 
 	private void assertHeader(Cell cell, String headerName) {

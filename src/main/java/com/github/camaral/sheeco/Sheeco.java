@@ -45,6 +45,7 @@ import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
 import com.github.camaral.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
 import com.github.camaral.sheeco.processor.Attribute;
+import com.github.camaral.sheeco.processor.Element;
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.processor.PayloadContext;
 import com.github.camaral.sheeco.processor.PayloadFiller;
@@ -143,7 +144,8 @@ public class Sheeco {
 	 *            Java types annotated with {@link SpreadsheetPayload}
 	 * */
 	public void toSpreadsheet(final OutputStream stream,
-			final Set<Class<? extends Object>> payloadClasses) throws IOException {
+			final Set<Class<? extends Object>> payloadClasses)
+			throws IOException {
 		if (payloadClasses.size() < 1) {
 			throw new IllegalArgumentException(
 					"At least one payload class must be present");
@@ -157,10 +159,7 @@ public class Sheeco {
 
 			final Sheet sheet = createSheet(wb, payload.getName());
 			final Row row = createRow(sheet);
-
-			for (Attribute attribute : payload.getAttributes()) {
-				createCell(creationHelper, row, attribute);
-			}
+			createCells(payload, row, creationHelper);
 		}
 
 		wb.write(stream);
@@ -182,7 +181,8 @@ public class Sheeco {
 			throw new NullPointerException("payloadClasses");
 		}
 
-		HashSet<Class<? extends Object>> classes = new HashSet<>(Arrays.asList(payloadClasses));
+		HashSet<Class<? extends Object>> classes = new HashSet<>(
+				Arrays.asList(payloadClasses));
 		toSpreadsheet(stream, classes);
 	}
 
@@ -211,6 +211,17 @@ public class Sheeco {
 		sheet.createRow(0);
 		final Row row = sheet.getRow(0);
 		return row;
+	}
+
+	private void createCells(final Payload<? extends Object> payload,
+			final Row row, final CreationHelper creationHelper) {
+		for (Attribute attribute : payload.getAttributes()) {
+			createCell(creationHelper, row, attribute);
+		}
+		for (Element element : payload.getElements()) {
+			Payload<?> subPayload = element.getPayload();
+			createCells(subPayload, row, creationHelper);
+		}
 	}
 
 	private void createCell(final CreationHelper creationHelper, final Row row,
