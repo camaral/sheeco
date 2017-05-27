@@ -19,7 +19,6 @@ cache:
   directories:
     - ~/.m2/repository
 
-#FIXME: Encrypt deployment keys on Linux
-#after_success:
-#  - ./cd/before-deploy.sh
-#  - ./cd/deploy.sh
+after_success:
+  - ./cd/before-deploy.sh
+  - ./cd/deploy.sh
