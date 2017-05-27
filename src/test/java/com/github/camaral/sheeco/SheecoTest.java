@@ -18,7 +18,7 @@ package com.github.camaral.sheeco;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,19 +72,32 @@ public class SheecoTest {
 		}
 	}
 
-	public void testToSpreadsheet() throws Exception {
+	public void testToSpreadsheetWithSet() throws Exception {
 		// given
-		Set<Class<Cat>> payloadClasses = Collections.singleton(Cat.class);
+		Set<Class<? extends Object>> payloadClasses = new HashSet<>();
+		payloadClasses.add(Cat.class);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		// when
-		sut.toSpreadsheet(payloadClasses, out);
+		sut.toSpreadsheet(out, payloadClasses);
 
 		// then
 		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
 		Workbook wb = WorkbookFactory.create(in);
 		assertCatHeaders(wb);
+	}
 
+	public void testToSpreadsheetWithVarArgs() throws Exception {
+		// given
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		// when
+		sut.toSpreadsheet(out, Cat.class);
+
+		// then
+		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+		Workbook wb = WorkbookFactory.create(in);
+		assertCatHeaders(wb);
 	}
 
 	private void assertsFromViolationSpreadsheet(List<Cat> cats) {
@@ -168,12 +181,15 @@ public class SheecoTest {
 		Assert.assertNotNull(sheet, "Sheet must be created");
 		Row row = sheet.getRow(0);
 		Assert.assertNotNull(sheet, "Header row must be created");
-		Cell name = row.getCell(0);
-		Assert.assertNotNull(name, "Name header must be created");
-		Assert.assertEquals(name.getStringCellValue(), "name");
-		Cell male = row.getCell(1);
-		Assert.assertNotNull(male, "Male header must be created");
-		Assert.assertEquals(male.getStringCellValue(), "Male?");
+		assertHeader(row.getCell(0), "name");
+		assertHeader(row.getCell(1), "Male?");
+		assertHeader(row.getCell(2), "Birth date");
+
+	}
+
+	private void assertHeader(Cell cell, String headerName) {
+		Assert.assertNotNull(cell, headerName + " header must be created");
+		Assert.assertEquals(cell.getStringCellValue(), headerName);
 	}
 
 }

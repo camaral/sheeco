@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -135,19 +137,23 @@ public class Sheeco {
 	 * Creates a spreadsheet with only the headers as described by the set of
 	 * payloadClass, but no data. For each payloadClass a sheet will be created.
 	 * 
-	 * @param payloadClass
-	 *            Java types annotated with {@link SpreadsheetPayload}
 	 * @param stream
 	 *            The output which will receive the content of the spreadsheet
-	 */
-	public <T> void toSpreadsheet(final Set<Class<T>> payloadClass,
-			final OutputStream stream) throws IOException {
+	 * @param payloadClasses
+	 *            Java types annotated with {@link SpreadsheetPayload}
+	 * */
+	public void toSpreadsheet(final OutputStream stream,
+			final Set<Class<? extends Object>> payloadClasses) throws IOException {
+		if (payloadClasses.size() < 1) {
+			throw new IllegalArgumentException(
+					"At least one payload class must be present");
+		}
 
 		final HSSFWorkbook wb = new HSSFWorkbook();
 		final CreationHelper creationHelper = wb.getCreationHelper();
 
-		for (final Class<?> clazz : payloadClass) {
-			final Payload<?> payload = new Payload<>(clazz);
+		for (final Class<? extends Object> clazz : payloadClasses) {
+			final Payload<? extends Object> payload = new Payload<>(clazz);
 
 			final Sheet sheet = createSheet(wb, payload.getName());
 			final Row row = createRow(sheet);
@@ -161,22 +167,41 @@ public class Sheeco {
 	}
 
 	/**
+	 * Creates a spreadsheet with only the headers as described by the set of
+	 * payloadClass, but no data. For each payloadClass a sheet will be created.
+	 * 
+	 * @param stream
+	 *            The output which will receive the content of the spreadsheet
+	 * @param payloadClasses
+	 *            Java types annotated with {@link SpreadsheetPayload}
+	 * */
+	@SafeVarargs
+	public final void toSpreadsheet(final OutputStream stream,
+			final Class<? extends Object>... payloadClasses) throws IOException {
+		if (payloadClasses == null) {
+			throw new NullPointerException("payloadClasses");
+		}
+
+		HashSet<Class<? extends Object>> classes = new HashSet<>(Arrays.asList(payloadClasses));
+		toSpreadsheet(stream, classes);
+	}
+
+	/**
 	 * Creates a spreadsheet with the headers and the content of the payload
 	 * objects.
 	 * 
+	 * @param stream
+	 *            The output which will receive the content of the spreadsheet
 	 * @param payloads
 	 *            Objects of a Java type annotated with
 	 *            {@link SpreadsheetPayload}
-	 * @param stream
-	 *            The output which will receive the content of the spreadsheet
 	 */
-	public void toSpreadsheet(final List<? extends Object> payloads,
-			final OutputStream stream) {
+	public void toSpreadsheet(final OutputStream stream,
+			final List<? extends Object> payloads) {
 		throw new RuntimeException("Not Implemented");
 	}
 
-	private Sheet createSheet(final HSSFWorkbook wb,
-			final String payloadName) {
+	private Sheet createSheet(final HSSFWorkbook wb, final String payloadName) {
 		String sheetName = WorkbookUtil.createSafeSheetName(payloadName);
 		final Sheet sheet = wb.createSheet(sheetName);
 		return sheet;
