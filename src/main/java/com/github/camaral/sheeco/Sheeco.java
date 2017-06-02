@@ -44,11 +44,13 @@ import org.apache.poi.ss.util.WorkbookUtil;
 import com.github.camaral.sheeco.annotation.SpreadsheetPayload;
 import com.github.camaral.sheeco.exceptions.SpreadsheetUnmarshallingException;
 import com.github.camaral.sheeco.exceptions.SpreasheetUnmarshallingUnrecoverableException;
+import com.github.camaral.sheeco.processor.Assert;
 import com.github.camaral.sheeco.processor.Attribute;
 import com.github.camaral.sheeco.processor.Element;
 import com.github.camaral.sheeco.processor.Payload;
 import com.github.camaral.sheeco.processor.PayloadContext;
 import com.github.camaral.sheeco.processor.PayloadFiller;
+import com.github.camaral.sheeco.processor.ReflectionUtils;
 
 /**
  * @author caio.amaral
@@ -146,10 +148,9 @@ public class Sheeco {
 	public void toSpreadsheet(final OutputStream stream,
 			final Set<Class<? extends Object>> payloadClasses)
 			throws IOException {
-		if (payloadClasses.size() < 1) {
-			throw new IllegalArgumentException(
-					"At least one payload class must be present");
-		}
+
+		Assert.notEmpty(payloadClasses,
+				"At least one payload class must be present");
 
 		final HSSFWorkbook wb = new HSSFWorkbook();
 		final CreationHelper creationHelper = wb.getCreationHelper();
@@ -177,9 +178,7 @@ public class Sheeco {
 	@SafeVarargs
 	public final void toSpreadsheet(final OutputStream stream,
 			final Class<? extends Object>... payloadClasses) throws IOException {
-		if (payloadClasses == null) {
-			throw new NullPointerException("payloadClasses");
-		}
+		Assert.notNull(payloadClasses, "payloadClasses");
 
 		HashSet<Class<? extends Object>> classes = new HashSet<>(
 				Arrays.asList(payloadClasses));
@@ -196,9 +195,25 @@ public class Sheeco {
 	 *            Objects of a Java type annotated with
 	 *            {@link SpreadsheetPayload}
 	 */
-	public void toSpreadsheet(final OutputStream stream,
-			final List<? extends Object> payloads) {
-		throw new RuntimeException("Not Implemented");
+	public <T> void toSpreadsheet(final OutputStream stream,
+			final List<T> payloads) throws IOException {
+		final Class<?> clazz = ReflectionUtils.getType(payloads);
+		final Payload<? extends Object> payload = new Payload<>(clazz);
+
+		final HSSFWorkbook wb = new HSSFWorkbook();
+		final CreationHelper creationHelper = wb.getCreationHelper();
+		final Sheet sheet = createSheet(wb, payload.getName());
+		final Row row = createRow(sheet);
+		createCells(payload, row, creationHelper);
+
+		for (T payloadObj : payloads) {
+			for (Attribute attr : payload.getAttributes()) {
+				Row payloadRow = createRow(sheet);
+				attr.addCell(payloadRow, payloadObj);
+			}
+		}
+
+		wb.write(stream);
 	}
 
 	private Sheet createSheet(final HSSFWorkbook wb, final String payloadName) {
@@ -208,8 +223,9 @@ public class Sheeco {
 	}
 
 	private Row createRow(final Sheet sheet) {
-		sheet.createRow(0);
-		final Row row = sheet.getRow(0);
+		int lastRowNum = sheet.getLastRowNum();
+		sheet.createRow(lastRowNum);
+		final Row row = sheet.getRow(lastRowNum);
 		return row;
 	}
 

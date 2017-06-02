@@ -19,6 +19,7 @@ package com.github.camaral.sheeco.processor;
 import java.lang.reflect.Field;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import com.github.camaral.sheeco.annotation.SpreadsheetAttribute;
 import com.github.camaral.sheeco.type.adapter.InvalidCellValueException;
@@ -62,8 +63,36 @@ public class Attribute {
 						e);
 			} catch (final IllegalAccessException e) {
 				throw new IllegalStateException(
-						"Field is unaccessable. It may be an programming error.", e);
+						"Field is unaccessable. It may be an programming error.",
+						e);
 			}
+		}
+	}
+
+	/**
+	 * Create a new cell, knowing from which field the value must be loaded and
+	 * to which column the value should be placed.
+	 * 
+	 * @param row
+	 *            The row where to place the value
+	 * @param payload
+	 *            the object from where to read the value
+	 */
+	public void addCell(final Row row, final Object payload) {
+		try {
+			Object value = field.get(payload);
+			if (value != null) {
+				Cell cell = row.createCell(columnIndex);
+				// TODO: use type adapter
+				cell.setCellValue(value.toString());
+			}
+		} catch (IllegalArgumentException e) {
+			throw new IllegalStateException(
+					"Field does not belongs to payload. It may be an programming error.",
+					e);
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException(
+					"Field is unaccessable. It may be an programming error.", e);
 		}
 	}
 

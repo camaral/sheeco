@@ -22,9 +22,23 @@ import java.util.List;
 
 /**
  * @author caio.amaral
- *
+ * 
  */
 public class ReflectionUtils {
+
+	/**
+	 * Simple returns the type of the first element of a list. The whole list
+	 * will not be checked here, instead the caller should check it while
+	 * iterating through the values.
+	 * 
+	 * @param list
+	 * @return The type of the first element.
+	 */
+	public static Class<?> getType(List<?> list) {
+		Assert.notEmpty(list, "Cannot define type of an empty list");
+		return list.iterator().next().getClass();
+	}
+
 	/**
 	 * Get the field type
 	 * 
